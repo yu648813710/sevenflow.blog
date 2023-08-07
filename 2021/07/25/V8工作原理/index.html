@@ -1,0 +1,667 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>V8工作原理 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="V8工作原理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-25 23:10" pubdate>
+        2021年7月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      42
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">V8工作原理</h1>
+            
+            <div class="markdown-body">
+              <h1 id="V8工作原理"><a href="#V8工作原理" class="headerlink" title="V8工作原理"></a>V8工作原理</h1><h2 id="栈空间和堆空间：数据是如何存储的？"><a href="#栈空间和堆空间：数据是如何存储的？" class="headerlink" title="栈空间和堆空间：数据是如何存储的？"></a>栈空间和堆空间：数据是如何存储的？</h2><blockquote>
+<p>主要是为了搞清楚JS的内存机制</p>
+</blockquote>
+<h3 id="让人疑惑的浅拷贝和深拷贝现象"><a href="#让人疑惑的浅拷贝和深拷贝现象" class="headerlink" title="让人疑惑的浅拷贝和深拷贝现象"></a>让人疑惑的浅拷贝和深拷贝现象</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs js"><br><span class="hljs-comment">// 深拷贝</span><br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>)</span>&#123;<br>    <span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span><br>    <span class="hljs-keyword">var</span> b = a<br>    a = <span class="hljs-number">2</span><br>    <span class="hljs-built_in">console</span>.log(a) <span class="hljs-comment">// 2</span><br>    <span class="hljs-built_in">console</span>.log(b) <span class="hljs-comment">// 1</span><br>&#125;<br>foo()<br><br>...<br><br><span class="hljs-comment">// 浅拷贝</span><br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>)</span>&#123;<br>    <span class="hljs-keyword">var</span> a = &#123;<span class="hljs-attr">name</span>:<span class="hljs-string">&quot;极客时间&quot;</span>&#125;<br>    <span class="hljs-keyword">var</span> b = a<br>    a.name = <span class="hljs-string">&quot;极客邦&quot;</span> <br>    <span class="hljs-built_in">console</span>.log(a) <span class="hljs-comment">// name  = &quot;极客邦&quot; </span><br>    <span class="hljs-built_in">console</span>.log(b) <span class="hljs-comment">// name  = &quot;极客邦&quot; </span><br>&#125;<br>foo()<br><br></code></pre></td></tr></table></figure>
+
+<p>要解答这个现象需要弄清楚JS是什么类型语言，还需要搞清楚js的数据类型，以及数据类型的存储，而这个现象就是由数据类型存储引起的</p>
+<h3 id="语言类型分类"><a href="#语言类型分类" class="headerlink" title="语言类型分类"></a>语言类型分类</h3><ul>
+<li><p>在使用之前就需要确认其变量数据类型的称为静态语言。相反地，我们把在运行过程中需要检查数据类型的语言称为动态语言。</p>
+</li>
+<li><p>支持隐式类型转换的语言称为弱类型语言，不支持隐式类型转换的语言称为强类型语言。</p>
+</li>
+</ul>
+<p>JS是 动态的弱类型，数据类型分为 原始类型 和引用类型</p>
+<h3 id="内存空间"><a href="#内存空间" class="headerlink" title="内存空间"></a>内存空间</h3><p>js运行过程中的存储方式</p>
+<ul>
+<li><p>代码空间，主要是存储执行代码，后面做介绍</p>
+</li>
+<li><p>栈空间，调用栈用来存储执行上下文的</p>
+<ul>
+<li><p>为什么引起浅拷贝，因为引用对象的 数据存在堆中，调用栈或者说执行上下文只存储乐对象的地址，所以浅拷贝只是复制了地址</p>
+</li>
+<li><p>通常情况下，栈空间都不会设置太大，主要用来存放一些原始类型的小数据。</p>
+</li>
+</ul>
+</li>
+<li><p>堆空间</p>
+<ul>
+<li>堆空间很大，能存放很多大的数据，不过缺点是分配内存和回收内存都会占用一定的时间。</li>
+</ul>
+</li>
+</ul>
+<p>不能所有数据都放入<code>栈</code>中，因为 JavaScript 引擎需要用栈来维护程序执行期间上下文的状态，如果栈空间大了话，所有的数据都存放在栈空间里面，那么会影响到上下文切换的效率，进而又影响到整个程序的执行效率。</p>
+<p>比如一个函数执行完了 这个函数所占用的栈空间的环境上下文会立马被回收。</p>
+<h3 id="再谈闭包"><a href="#再谈闭包" class="headerlink" title="再谈闭包"></a>再谈闭包</h3><p>因为正常函数执行完后 会被回收上下文，而闭包却还存在 可用变量, 所以闭包情况下会导致 基础类型的变量也在堆空间中</p>
+<p>代码分析</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs js"><br>    <br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> myName = <span class="hljs-string">&quot;极客时间&quot;</span><br>    <span class="hljs-keyword">let</span> test1 = <span class="hljs-number">1</span><br>    <span class="hljs-keyword">const</span> test2 = <span class="hljs-number">2</span><br>    <span class="hljs-keyword">var</span> innerBar = &#123; <br>        setName:<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newName</span>)</span>&#123;<br>            myName = newName<br>        &#125;,<br>        getName:<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;<br>            <span class="hljs-built_in">console</span>.log(test1)<br>            <span class="hljs-keyword">return</span> myName<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> innerBar<br>&#125;<br><span class="hljs-keyword">var</span> bar = foo()<br>bar.setName(<span class="hljs-string">&quot;极客邦&quot;</span>)<br>bar.getName()<br><span class="hljs-built_in">console</span>.log(bar.getName())<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>当 JavaScript 引擎执行到 foo 函数时，首先会编译，并创建一个空执行上下文。</p>
+</li>
+<li><p>在编译过程中，遇到内部函数 setName，JavaScript 引擎还要对内部函数做一次快速的词法扫描，发现该内部函数引用了 foo 函数中的 myName 变量，由于是内部函数引用了外部函数的变量，所以 JavaScript 引擎判断这是一个闭包，于是在堆空间创建换一个“closure(foo)”的对象（这是一个内部对象，JavaScript 是无法访问的），用来保存 myName 变量。</p>
+</li>
+<li><p>接着继续扫描到 getName 方法时，发现该函数内部还引用变量 test1，于是 JavaScript 引擎又将 test1 添加到“closure(foo)”对象中。</p>
+</li>
+<li><p>这时候堆中的“closure(foo)”对象中就包含了 myName 和 test1 两个变量了。</p>
+</li>
+<li><p>由于 test2 并没有被内部函数引用，所以 test2 依然保存在调用栈中。</p>
+</li>
+</ul>
+<blockquote>
+<p>产生闭包的核心有两步：第一步是需要预扫描内部函数；第二步是把内部函数引用的外部变量保存到堆中。</p>
+</blockquote>
+<h2 id="垃圾回收：垃圾数据是如何自动回收的？"><a href="#垃圾回收：垃圾数据是如何自动回收的？" class="headerlink" title="垃圾回收：垃圾数据是如何自动回收的？"></a>垃圾回收：垃圾数据是如何自动回收的？</h2><blockquote>
+<p>通常情况下，垃圾数据回收分为手动回收和自动回收两种策略。C/C++都是手动回收，何时2分配内存，何时销毁内存由代码控制，当调用一个内存却没有释放这个内存，就会内存泄漏，另外一种使用的是自动垃圾回收的策略，如 JavaScript、Java、Python 等语言，产生的垃圾数据是由垃圾回收器来释放的</p>
+</blockquote>
+<h3 id="调用栈中的数据是如何回收的"><a href="#调用栈中的数据是如何回收的" class="headerlink" title="调用栈中的数据是如何回收的"></a>调用栈中的数据是如何回收的</h3><p>分析代码来看</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs js"><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>)</span>&#123;<br>    <span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span><br>    <span class="hljs-keyword">var</span> b = &#123;<span class="hljs-attr">name</span>:<span class="hljs-string">&quot;极客邦&quot;</span>&#125;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showName</span>(<span class="hljs-params"></span>)</span>&#123;<br>      <span class="hljs-keyword">var</span> c = <span class="hljs-number">2</span><br>      <span class="hljs-keyword">var</span> d = &#123;<span class="hljs-attr">name</span>:<span class="hljs-string">&quot;极客时间&quot;</span>&#125;<br>    &#125;<br>    showName()<br>&#125;<br>foo()<br></code></pre></td></tr></table></figure>
+
+<p>当执行foo时，调用栈和堆空间如下</p>
+<p><img src="https://static001.geekbang.org/resource/image/d8/b0/d807ca19c2c8853ef5a38dca0fb79ab0.jpg" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<blockquote>
+<p>JS引擎执行JS时会有一个记录当前执行状态的<code>指针称为ESP</code></p>
+</blockquote>
+<ul>
+<li>当执行完showName函数，JS会把<code>ESP</code>下移到foo函数的执行上下文，这个下移操作就是销毁showName函数执行上下文的过程</li>
+<li>下移后并不会销毁之前的栈空间，执行完后showName是无效空间，当有新的执行上下文会直接覆盖这块内存</li>
+</ul>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>当一个函数执行结束之后，JavaScript 引擎会通过向下移动 ESP 来销毁该函数保存在栈中的执行上下文。</p>
+<h3 id="堆数据回收"><a href="#堆数据回收" class="headerlink" title="堆数据回收"></a>堆数据回收</h3><p>栈空间中环境上下文被回收了，但是引用对象存储在堆空间，还没有被回收，而堆空间的垃圾回收就需要JS中的垃圾回收器了，学习JS的垃圾回收期，先需要学习两个概念</p>
+<h4 id="代际假说"><a href="#代际假说" class="headerlink" title="代际假说"></a>代际假说</h4><ul>
+<li><p>特点</p>
+<ul>
+<li><p>大部分对象在内存中存在的时间很短，简单来说，就是很多对象一经分配内存，很快就变得不可访问；</p>
+</li>
+<li><p>不死的对象活得更久</p>
+<p>这两个特点不仅仅适用于 JavaScript，同样适用于大多数的动态语言，如 Java、Python 等。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>通常，垃圾回收算法有很多种，但是并没有哪一种能胜任所有的场景，你需要权衡各种场景，根据对象的生存周期的不同而使用不同的算法，以便达到最好的效果。</p>
+<h4 id="分代收集"><a href="#分代收集" class="headerlink" title="分代收集"></a>分代收集</h4><ul>
+<li>V8会把堆分为两个区域，而且分别由把不同的垃圾回收器<ul>
+<li>老生代<ul>
+<li>主垃圾回收器负责</li>
+<li>存放生存时间久的对象</li>
+</ul>
+</li>
+<li>新生代<ul>
+<li>副垃圾回收器负责</li>
+<li>存放生存时间短的对象</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="垃圾回收器流程"><a href="#垃圾回收器流程" class="headerlink" title="垃圾回收器流程"></a>垃圾回收器流程</h4><ul>
+<li><p>垃圾回收器的执行流程，不管什么类型的垃圾回收器流程是一致的</p>
+<ul>
+<li>标记空间中活动对象和非活动对象。所谓活动对象就是还在使用的对象，非活动对象就是可以进行垃圾回收的对象。</li>
+<li>回收非活动对象所占据的内存。其实就是在所有的标记完成之后，统一清理内存中所有被标记为可回收的对象。</li>
+<li>做内存整理。一般来说，频繁回收对象后，内存中就会存在大量不连续空间，我们把这些不连续的内存空间称为内存碎片。当内存中出现了大量的内存碎片之后，如果需要分配较大连续内存的时候，就有可能出现内存不足的情况。所以最后一步需要整理这些内存碎片，但这步其实是可选的，因为有的垃圾回收器不会产生内存碎片，比如接下来我们要介绍的副垃圾回收器。</li>
+</ul>
+</li>
+<li><p>副垃圾回收器</p>
+<ul>
+<li><p>垃圾回收比较频繁，因为空间不大，所以只要空间满了就要回收</p>
+</li>
+<li><p>新生代中用 Scavenge 算法来处理</p>
+<p><img src="https://static001.geekbang.org/resource/image/4f/af/4f9310c7da631fa5a57f871099bfbeaf.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>新加入的对象都会存放到对象区域，当对象区域快被写满时，就需要执行一次垃圾清理操作。</p>
+</li>
+<li><p>在垃圾回收过程中，首先要对对象区域中的垃圾做标记；标记完成之后，就进入垃圾清理阶段，副垃圾回收器会把这些存活的对象复制到空闲区域中，同时它还会把这些对象有序地排列起来，所以这个复制过程，也就相当于完成了内存整理操作，复制后空闲区域就没有内存碎片了。</p>
+</li>
+<li><p>完成复制后，对象区域与空闲区域进行角色翻转，也就是原来的对象区域变成空闲区域，原来的空闲区域变成了对象区域。这样就完成了垃圾对象的回收操作，同时这种角色翻转的操作还能让新生代中的这两块区域无限重复使用下去。</p>
+<p>由于新生代中采用的 Scavenge 算法，所以每次执行清理操作时，都需要将存活的对象从对象区域复制到空闲区域。但复制操作需要时间成本，如果新生区空间设置得太大了，那么每次清理的时间就会过久，所以<code>为了执行效率，一般新生区的空间会被设置得比较小。</code></p>
+</li>
+<li><p>对象晋升策略</p>
+<ul>
+<li>新生区的空间不大，所以很容易被存活的对象装满整个区域,所以经过两次垃圾回收依然还存活的对象，会被移动到老生区中。</li>
+</ul>
+</li>
+<li><p>主垃圾回收器</p>
+<p>两个特点，一个是对象占用空间大，另一个是对象存活时间长。</p>
+<p>由于老生区的对象比较大，若要在老生区中使用 Scavenge 算法进行垃圾回收，复制这些大的对象将会花费比较多的时间，从而导致回收执行效率不高，同时还会浪费一半的空间。因而，主垃圾回收器是采用标记 - 清除（Mark-Sweep）的算法进行垃圾回收的。</p>
+<ul>
+<li>标记阶段就是从一组根元素开始，递归遍历这组根元素，在这个遍历过程中，能到达的元素称为活动对象，没有到达的元素就可以判断为垃圾数据。<img src="https://static001.geekbang.org/resource/image/6c/69/6c8361d3e52c1c37a06699ed94652e69.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></li>
+<li>接下来就是垃圾的清除过程。它和副垃圾回收器的垃圾清除过程完全不同，你可以理解这个过程是清除掉红色标记数据的过程，可参考下图大致理解下其清除过程：<img src="https://static001.geekbang.org/resource/image/d0/85/d015db8ad0df7f0ccb1bdb8e31f96e85.png" srcset="/sevenflow.blog/img/loading.gif" alt="img">这样会导致大量不连续的内存碎片，从而导致大对象无法分配到足够的连续内存，这个过程是<code>标记-清除</code>算法</li>
+<li>为了解决清除算法问题，产生了另外一个算法<code>标记-整理</code>，只有清除过程不同，是把标记存活的对象统一放到一个连续的内存区，然后清除其他不存活的连续内存区</li>
+</ul>
+</li>
+</ul>
+<h4 id="全停顿"><a href="#全停顿" class="headerlink" title="全停顿"></a>全停顿</h4><blockquote>
+<p>由于 JavaScript 是运行在主线程之上的，一旦执行垃圾回收算法，都需要将正在执行的 JavaScript 脚本暂停下来，待垃圾回收完毕后再恢复脚本执行。我们把这种行为叫做全停顿（Stop-The-World）。</p>
+</blockquote>
+<ul>
+<li>所带来的问题<ul>
+<li>新生代垃圾回收还好，比较小全停顿时间很短，但是旧生代内存比较大，会导致停顿时间很长，比如一个动画正在执行结果垃圾回收导致全停顿了，那么动画就暂停了</li>
+</ul>
+</li>
+<li>解决问题<ul>
+<li>V8用了<code>增量标记</code>算法解决这个问题，其实就是将标记过程分为一个个的子标记过程，同时让垃圾回收标记和 JavaScript 应用逻辑交替进行，直到标记阶段完成</li>
+<li>这样垃圾回收分成了很多个小任务，就不会感受到页面卡顿了</li>
+</ul>
+</li>
+</ul>
+<h2 id="V8如何执行一段JS代码？"><a href="#V8如何执行一段JS代码？" class="headerlink" title="V8如何执行一段JS代码？"></a>V8如何执行一段JS代码？</h2><blockquote>
+<p>要深入理解 V8 的工作原理，你需要搞清楚一些概念和原理，比如接下来我们要详细讲解的<code>编译器（Compiler）</code>、<code>解释器（Interpreter）</code>、<code>抽象语法树（AST）</code>、<code>字节码（Bytecode）</code>、<code>即时编译器（JIT）</code>等概念，都是你需要重点关注的。</p>
+</blockquote>
+<h3 id="编译器和解释器"><a href="#编译器和解释器" class="headerlink" title="编译器和解释器"></a>编译器和解释器</h3><h4 id="意义"><a href="#意义" class="headerlink" title="意义"></a>意义</h4><ul>
+<li>机器不能直接理解我们缩写的代码，所以执行代码之前需要编译或者解释然后<code>翻译</code>成机器能读懂的机器语言</li>
+</ul>
+<h4 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h4><ul>
+<li>编译器<ul>
+<li>给编译型语言用的，如c/c++，GO等</li>
+<li>编译之后会直接<code>保留</code>机器能读懂的二进制文件，这样每次运行程序时，都可以直接运行该二进制文件，而不需要再次<code>重新编译</code>了</li>
+</ul>
+</li>
+<li>解释器<ul>
+<li>给解释型语言用的，如python和js</li>
+<li>在每次运行时都需要通过解释器对程序进行动态解释和执行</li>
+</ul>
+</li>
+</ul>
+<h4 id="编译流程"><a href="#编译流程" class="headerlink" title="编译流程"></a>编译流程</h4><p><img src="https://static001.geekbang.org/resource/image/4e/81/4e196603ecb78188e99e963e251b9781.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<ul>
+<li>编译器<ul>
+<li>在编译型语言的编译过程中，编译器首先会依次对源代码进行词法分析、语法分析，生成抽象语法树（AST），然后是优化代码，最后再生成处理器能够理解的机器码。如果编译成功，将会生成一个可执行的文件。但如果编译过程发生了语法或者其他的错误，那么编译器就会抛出异常，最后的二进制文件也不会生成成功。</li>
+</ul>
+</li>
+<li>解释器<ul>
+<li>在解释型语言的解释过程中，同样解释器也会对源代码进行词法分析、语法分析，并生成抽象语法树（AST），不过它会再基于抽象语法树生成字节码，最后再根据字节码来执行程序、输出结果。</li>
+</ul>
+</li>
+</ul>
+<h3 id="V8怎么执行JS代码？"><a href="#V8怎么执行JS代码？" class="headerlink" title="V8怎么执行JS代码？"></a>V8怎么执行JS代码？</h3><p>预览图</p>
+<p><img src="https://static001.geekbang.org/resource/image/1a/ae/1af282bdc4036096c03074da53eb84ae.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<p>V8 在执行过程中既有<em>解释器 Ignition</em>，又有<em>编译器 TurboFan</em></p>
+<p>字节码与汇编属于同一级别</p>
+<ul>
+<li>生成抽象语法树AST和执行上下文<ul>
+<li>先生成AST才生成执行上下文</li>
+<li>高级语言开发者可以理解，但是让编译器和解释器理解就非常困难，编译和解释器可以理解的就是AST，</li>
+</ul>
+</li>
+</ul>
+<h4 id="AST生成阶段"><a href="#AST生成阶段" class="headerlink" title="AST生成阶段"></a>AST生成阶段</h4><ul>
+<li>第一阶段是分词（tokenize），又称为词法分析</li>
+<li>第二阶段是解析（parse），又称为语法分析，</li>
+</ul>
+<h4 id="生成字节码"><a href="#生成字节码" class="headerlink" title="生成字节码"></a>生成字节码</h4><blockquote>
+<p>字节码就是介于 AST 和机器码之间的一种代码。但是与特定类型的机器码无关，字节码需要通过解释器将其转换为机器码后才能执行。</p>
+</blockquote>
+<p>之前是生成字节码 不生成机器码，后来因为内存占用问题，因为 V8 需要消耗大量的内存来存放转换后的机器码。为了解决内存占用问题，V8 团队大幅重构了引擎架构，引入字节码，并且抛弃了之前的编译器，最终花了将进四年的时间，实现了现在的这套架构。</p>
+<h4 id="执行代码"><a href="#执行代码" class="headerlink" title="执行代码"></a>执行代码</h4><p><img src="https://static001.geekbang.org/resource/image/66/8a/662413313149f66fe0880113cb6ab98a.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<ul>
+<li>热点代码<ul>
+<li>在 Ignition 执行字节码的过程中，如果发现有热点代码（HotSpot），比如一段代码被重复执行多次，这种就称为热点代码，那么后台的编译器 TurboFan 就会把该段热点的字节码编译为高效的机器码，然后当再次执行这段被优化的代码时，只需要执行编译后的机器码就可以了，这样就大大提升了代码的执行效率。</li>
+</ul>
+</li>
+<li>JIT 即时编译<ul>
+<li>具体到 V8，就是指解释器 Ignition 在解释执行字节码的同时，收集代码信息，当它发现某一部分代码变热了之后，TurboFan 编译器便闪亮登场，把热点的字节码转换为机器码，并把转换后的机器码保存起来，以备下次使用。</li>
+</ul>
+</li>
+</ul>
+<h3 id="JS性能优化"><a href="#JS性能优化" class="headerlink" title="JS性能优化"></a>JS性能优化</h3><ul>
+<li>提升单次脚本的执行速度，避免 JavaScript 的长任务霸占主线程，这样可以使得页面快速响应交互；</li>
+<li>避免大的内联脚本，因为在解析 HTML 的过程中，解析和编译也会占用主线程；</li>
+<li>减少 JavaScript 文件的容量，因为更小的文件会提升下载速度，并且占用更低的内存。</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5/">浏览器工作原理与实践</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/08/25/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%BE%AA%E7%8E%AF%E7%B3%BB%E7%BB%9F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">浏览器中的页面循环系统</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/05/25/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93%EF%BC%8C%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%81%8C%E4%B8%9A%E7%B4%A0%E5%85%BB/">
+                        <span class="hidden-mobile">代码整洁之道，程序员的职业素养读后感</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>

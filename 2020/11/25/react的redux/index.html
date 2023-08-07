@@ -1,0 +1,537 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>react的状态管理 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="react的状态管理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-25 23:10" pubdate>
+        2020年11月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">react的状态管理</h1>
+            
+            <div class="markdown-body">
+              <h2 id="什么是状态管理"><a href="#什么是状态管理" class="headerlink" title="什么是状态管理"></a>什么是状态管理</h2><blockquote>
+<p>对于跨组件状态进行统一管理，更加方便组件间的通信以及逻辑公用，状态就是对于组件来说可变的变量。</p>
+</blockquote>
+<h2 id="为什么需要状态管理"><a href="#为什么需要状态管理" class="headerlink" title="为什么需要状态管理"></a>为什么需要状态管理</h2><ul>
+<li>随着应用的规模越来越大，功能越来越复杂，组件的抽象粒度会越来越细，在视图中组合起来后层级也会越来越深，能够方便的<strong>跨组件共享状态</strong>成为迫切的需求。</li>
+<li>状态也需要按模块切分，状态的变更逻辑背后其实就是我们的业务逻辑，将其抽离出来能够彻底<strong>解耦ui和业务</strong>，有利于逻辑复用，以及持续的维护和迭代。</li>
+<li>状态如果能够被集中的管理起来，并合理的派发有利于组件<strong>按需更新</strong>，缩小渲染范围，从而提高渲染性能</li>
+</ul>
+<h2 id="都有那些状态管理"><a href="#都有那些状态管理" class="headerlink" title="都有那些状态管理"></a>都有那些状态管理</h2><h3 id="vue"><a href="#vue" class="headerlink" title="vue"></a>vue</h3><ul>
+<li>vuex</li>
+</ul>
+<h3 id="react"><a href="#react" class="headerlink" title="react"></a>react</h3><ul>
+<li>redux</li>
+</ul>
+<p>其实主要是redux，剩下都是衍生出来的**<em>类redux**</em>的状态库，比如 <code>redux-sage,redux-thunk...</code></p>
+<h2 id="redux的使用流程"><a href="#redux的使用流程" class="headerlink" title="redux的使用流程"></a>redux的使用流程</h2><h3 id="创建全局store属性"><a href="#创建全局store属性" class="headerlink" title="创建全局store属性"></a>创建全局store属性</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// store.js 文件</span><br><span class="hljs-keyword">import</span> &#123; createStore &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;redux&#x27;</span><br><span class="hljs-keyword">import</span> reducer <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./reducers&#x27;</span> <span class="hljs-comment">// 这个是修改store的文件</span><br><span class="hljs-keyword">const</span> store = createStore(reducer)<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> store;<br></code></pre></td></tr></table></figure>
+
+<h3 id="在reducers里写入store的值以及改变函数"><a href="#在reducers里写入store的值以及改变函数" class="headerlink" title="在reducers里写入store的值以及改变函数"></a>在reducers里写入store的值以及改变函数</h3><p>写入你要用的状态，以及改变状态的方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// todos.js</span><br><span class="hljs-comment">// 类似与vuex里的mutions</span><br><span class="hljs-comment">// reducers必需是一个方法，方法内含有两个参数，一个初始值，一个action的提交对象，action的规则是必须是含有type的一个对象</span><br><span class="hljs-comment">// 而且必须是一个纯函数，什么是纯函数，就是不改变参数的函数就是纯函数</span><br><span class="hljs-keyword">const</span> todos = <span class="hljs-function">(<span class="hljs-params">state = [], action</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">switch</span>(action.type) &#123;<br>        <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;ADD_TODO&#x27;</span>:<br>            <span class="hljs-keyword">return</span> [<br>                ...state,<br>                &#123;<br>                    id: action.id,<br>                    text: action.text,<br>                    completed: <span class="hljs-literal">false</span><br>                &#125;<br>            ]<br>        <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;CHANGE_TODO&#x27;</span>:<br>            <span class="hljs-keyword">return</span> state.map(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> &#123;<br>                <span class="hljs-keyword">if</span>(res.id === action.id) &#123;<br>                    res.completed = !res.completed;<br>                &#125;<br>                <span class="hljs-keyword">return</span> res;<br>            &#125;)<br>        <span class="hljs-keyword">default</span>:<br>            <span class="hljs-keyword">return</span> state<br>    &#125;<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> todos<br></code></pre></td></tr></table></figure>
+
+<p>和其他的状态管理合并然后导出</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// index.js</span><br><span class="hljs-keyword">import</span> &#123; combineReducers &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;redux&#x27;</span><br><span class="hljs-keyword">import</span> todos <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./todos&#x27;</span> <span class="hljs-comment">// todo任务列表的状态</span><br><span class="hljs-keyword">import</span> visibilityFilter <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./visibilityFilter&#x27;</span> <span class="hljs-comment">// 筛选的状态</span><br><span class="hljs-keyword">const</span> todoApp = combineReducers(&#123; <span class="hljs-comment">// 这里的 combineReducers 类似与vuex里的module，是为了更好的管理大型状态</span><br>    todos,<br>    visibilityFilter<br>&#125;)<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> todoApp<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="在组件上使用"><a href="#在组件上使用" class="headerlink" title="在组件上使用"></a>在组件上使用</h3><ul>
+<li><p>获取定义好的状态</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> store <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../store&#x27;</span> <span class="hljs-comment">// 引入sore</span><br><br><span class="hljs-keyword">const</span> todos = store.getState().todos; <span class="hljs-comment">// 获取todos的状态</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>修改状态</p>
+<p>dispatch是唯一该正规改变state的方法，直接修改也可以但是并不规范，而且会导致调试工具无法处理</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> store <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../store&#x27;</span> <span class="hljs-comment">// 引入sore</span><br><br><span class="hljs-keyword">const</span> action = <span class="hljs-function">(<span class="hljs-params">id</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">return</span> &#123;<br>        type: <span class="hljs-string">&#x27;CHANGE_TODO&#x27;</span>,<br>        id<br>    &#125;;<br>&#125;;<span class="hljs-comment">// 定义cation</span><br><br>store.dispatch(action(<span class="hljs-number">1</span>));<span class="hljs-comment">// 使用dispatch执行reducer里的方法然后修改state</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="store挂载到react的实例，然后state改变dom也可以响应"><a href="#store挂载到react的实例，然后state改变dom也可以响应" class="headerlink" title="store挂载到react的实例，然后state改变dom也可以响应"></a>store挂载到react的实例，然后state改变dom也可以响应</h3><p>​    所有前面的代码其实只是组件的行为对于state产生改变，或者用 state，但是并无法完成响应渲染。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span><br><span class="hljs-keyword">import</span> &#123; render &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react-dom&#x27;</span><br><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./containers/App&#x27;</span><br><span class="hljs-keyword">import</span> store <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./store&#x27;</span><br><br><span class="hljs-comment">// 初次渲染</span><br>render(<br>    &lt;App /&gt;,<br>  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;root&#x27;</span>)<br>)<br><span class="hljs-comment">// 监听变化然后重新渲染, subscribe 监听属性</span><br>store.subscribe(<span class="hljs-function">()=&gt;</span> &#123;<br>    render(<br>        &lt;App /&gt;,<br>      <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;root&#x27;</span>)<br>    )<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="注意的点"><a href="#注意的点" class="headerlink" title="注意的点"></a>注意的点</h3><ul>
+<li>全局应该只有一个store作为状态管理</li>
+<li>reducers应该是一个纯函数，不能修改参数，只能返回新的值</li>
+<li><strong><em>type 没有校验重复名称，意思就是可以有相同的type会导致出现问题</em></strong></li>
+</ul>
+<h2 id="redux的基础api"><a href="#redux的基础api" class="headerlink" title="redux的基础api"></a>redux的基础api</h2><h3 id="createStore"><a href="#createStore" class="headerlink" title="createStore"></a>createStore</h3><ul>
+<li>参数<ol>
+<li><code>reducer</code> <em>(Function)</em>: 接收两个参数，分别是当前的 state 树和要处理的action，返回新的 state 树。</li>
+<li>[<code>preloadedState</code>] <em>(any)</em>: 初始时的 state。也就是说只能初始化的时候传值，如果需要后端数据那么请求后再初始化</li>
+<li><code>enhancer</code> <em>(Function)</em>: Store enhancer 是一个组合 store creator 的高阶函数，返回一个新的强化过的 store creator。这与 middleware 相似，它也允许你通过复合函数改变 store 接口。说白了就是可以在这个里面对action的过程做一个拦截，做一些动作，比如记载action的提交记录之类的。</li>
+</ol>
+</li>
+</ul>
+<h3 id="store"><a href="#store" class="headerlink" title="store"></a>store</h3><ul>
+<li>getState()</li>
+<li>dispatch(action)</li>
+<li>subcribe(listener)</li>
+<li>replaceReducer(nextReducer)</li>
+</ul>
+<p>着重说一下 <code>replaceReducer</code>,这个用法是可以替换当前的reducer，意思就是可以实现动态的reducer，比如可以给之前reducer增加新的reducer</p>
+<h3 id="combineReducers"><a href="#combineReducers" class="headerlink" title="combineReducers"></a>combineReducers</h3><p>这个就是一个vuex里的module作用，可以组合多个reducer，传参也是reducer，示例如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js">rootReducer = combineReducers(&#123;<span class="hljs-attr">potato</span>: potatoReducer, <span class="hljs-attr">tomato</span>: tomatoReducer&#125;)<br><span class="hljs-comment">// rootReducer 将返回如下的 state 对象</span><br>&#123;<br>  potato: &#123;<br>    <span class="hljs-comment">// ... potatoes, 和一些其他由 potatoReducer 管理的 state 对象 ... </span><br>  &#125;,<br>  tomato: &#123;<br>    <span class="hljs-comment">// ... tomatoes, 和一些其他由 tomatoReducer 管理的 state 对象，比如说 sauce 属性 ...</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="react-redux"><a href="#react-redux" class="headerlink" title="react-redux"></a>react-redux</h2><h3 id="核心"><a href="#核心" class="headerlink" title="核心"></a>核心</h3><ul>
+<li>&lt; Provider store&gt;</li>
+</ul>
+<ul>
+<li>connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])</li>
+</ul>
+<h2 id="redux的调试工具"><a href="#redux的调试工具" class="headerlink" title="redux的调试工具"></a>redux的调试工具</h2><h3 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h3><ul>
+<li>有VPN的安装地址，<a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/search/redux?hl=zh-CN">redux DevTools</a></li>
+<li>国内安装地址，<a target="_blank" rel="noopener" href="https://chrome.zzzmh.cn/">极简插件</a></li>
+</ul>
+<h3 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h3><ul>
+<li><p>在入口文件写入 调用方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span><br><span class="hljs-keyword">import</span> &#123; render &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react-dom&#x27;</span><br><span class="hljs-keyword">import</span> &#123; createStore &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;redux&#x27;</span><br><span class="hljs-keyword">import</span> &#123; Provider &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react-redux&#x27;</span><br><span class="hljs-keyword">import</span> App <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./components/App&#x27;</span><br><span class="hljs-keyword">import</span> reducer <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./reducers&#x27;</span><br><br><span class="hljs-comment">// 判断是否有redux的开发者工具</span><br><br><span class="hljs-keyword">const</span> reduxDevtools = <span class="hljs-built_in">window</span>.devToolsExtension ? <span class="hljs-built_in">window</span>.devToolsExtension() : <span class="hljs-function">()=&gt;</span>&#123;&#125;<br><br><span class="hljs-comment">// 使用即可</span><br><span class="hljs-keyword">const</span> store = createStore(reducer, reduxDevtools)<br><br>render(<br>  &lt;Provider store=&#123;store&#125;&gt;<br>    &lt;App /&gt;<br>  &lt;/Provider&gt;,<br>  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;root&#x27;</span>)<br>)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>查看浏览器控制台redux的选项里面有了一些内容</p>
+<p><img src="C:\Users\7\AppData\Roaming\Typora\typora-user-images\image-20200815131109731.png" srcset="/sevenflow.blog/img/loading.gif" alt="image-20200815131109731"></p>
+</li>
+</ul>
+<h2 id="saga的出现"><a href="#saga的出现" class="headerlink" title="saga的出现"></a>saga的出现</h2><p>… </p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://cn.redux.js.org/docs/react-redux/">React-dedux</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000012142449">4 张动图解释为什么（什么时候）使用 Redux</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c876eff736e7">redux调试工具</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E5%89%8D%E7%AB%AF/">前端</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/react/">react</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/01/25/js%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BB%B6%E4%BC%B8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">js数据类型的延伸</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2020/11/25/%E5%85%B3%E4%BA%8E%E7%BD%91%E9%A1%B5%E9%80%82%E9%85%8D%E7%9A%84%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">关于网页适配的总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>

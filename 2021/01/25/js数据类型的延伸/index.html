@@ -1,0 +1,597 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>js数据类型的延伸 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="js数据类型的延伸">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-01-25 23:10" pubdate>
+        2021年1月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">js数据类型的延伸</h1>
+            
+            <div class="markdown-body">
+              <h1 id="js数据类型的延伸"><a href="#js数据类型的延伸" class="headerlink" title="js数据类型的延伸"></a>js数据类型的延伸</h1><p>这两天在复习基础知识，把之前的 觉得还存在模糊不清的知识想弄的再清楚一点，就针对数据类型的相关知识总结了一下</p>
+<h2 id="数据类型分类"><a href="#数据类型分类" class="headerlink" title="数据类型分类"></a>数据类型分类</h2><blockquote>
+<p>js的数据类型分为 值类型 和 引用类型 ，区分的依据就是本身不可变，只能重新赋值</p>
+</blockquote>
+<h3 id="值类型"><a href="#值类型" class="headerlink" title="值类型"></a>值类型</h3><ul>
+<li>string</li>
+<li>number</li>
+<li>boolean</li>
+<li>null</li>
+<li>undefined</li>
+<li>Symbol </li>
+<li>BigInt</li>
+</ul>
+<h3 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h3><ul>
+<li>Object<ul>
+<li>Array</li>
+<li>Function</li>
+<li>RegExp</li>
+<li>Date</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+<h2 id="类型的识别"><a href="#类型的识别" class="headerlink" title="类型的识别"></a>类型的识别</h2><blockquote>
+<p>如果有类型，那么就必须提到类型的识别，识别方法主要有以下几种</p>
+</blockquote>
+<h3 id="typeof"><a href="#typeof" class="headerlink" title="typeof"></a>typeof</h3><ul>
+<li><p>使用方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">typeof</span> &lt;值&gt; <span class="hljs-comment">// 值类型除了null以外都可以正常检测</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>缺点</p>
+<p>这个方法是有缺点的，无法检测引用类型的值，比如array和object检测出来都是 object，包括原始值null也是object</p>
+</li>
+<li><p>问题</p>
+<ul>
+<li><p>为什么 typeof 检测null也是 object，引用类型也是object</p>
+<p>js是32位BIT 来存储值的，而且使用值的第 1 位 - 3 位来识别类型，而 null 与 object 的低三位都是 0 ，所以导致检测出现问题。</p>
+</li>
+<li><p>为什么官方不改进？</p>
+<p>害怕出现旧项目不兼容问题，所以迟迟没有改动</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="instanceOf"><a href="#instanceOf" class="headerlink" title="instanceOf"></a>instanceOf</h3><ul>
+<li><p>使用方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> a = []<br>a <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span> <span class="hljs-comment">// true </span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>只可检测 引用类型，但是null不可用</li>
+<li>检测 arr 类型时 直接 写Object 也是 true</li>
+</ul>
+</li>
+<li><p>问题</p>
+<ul>
+<li><p>为什么无法检测null 而且 检测不精准</p>
+<p>instanceof 运算符本身是用来检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上，意思就是 必需是 new 出来的 实例，且值的自身有 构造函数才可以检测，但是值类型 是没有构造函数的 所以无法检测，而 array 的构造函数的原型 本身继承于 Object 所以导致检测不精准，如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> a = <span class="hljs-number">1</span>;<br>a <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Number</span>; <span class="hljs-comment">// false</span><br><span class="hljs-keyword">const</span> b = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Number</span>(<span class="hljs-number">1</span>);<br>b <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Number</span>; <span class="hljs-comment">// true</span><br>b <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>; <span class="hljs-comment">// true</span><br><span class="hljs-built_in">Number</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>; <span class="hljs-comment">// true</span><br><span class="hljs-built_in">Array</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>; <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Object-prototype-toString-call"><a href="#Object-prototype-toString-call" class="headerlink" title="Object.prototype.toString.call()"></a>Object.prototype.toString.call()</h3><ul>
+<li><p>使用方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-built_in">Object</span>.prototype.toString.call(<span class="hljs-number">1</span>) <span class="hljs-comment">// [Object Number]</span><br><span class="hljs-built_in">Object</span>.prototype.toString.call(&lt;值&gt;) <span class="hljs-comment">// [Object 值类型]</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>问题</p>
+<ul>
+<li><p>为什么 Object 的方法变指针后可以直接用来 检测类型？</p>
+<p><code>toString()</code> 方法返回一个表示该对象的字符串。这句话的理解可以看下面代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// object</span><br><span class="hljs-built_in">Object</span>.prototype.toString() <span class="hljs-comment">// [object object]</span><br><span class="hljs-comment">// array</span><br><span class="hljs-built_in">Array</span>.prototype.toString() <span class="hljs-comment">// 预期 [object array] 实际 &#x27;&#x27;</span><br>[].toString() <span class="hljs-comment">// &#x27;&#x27;</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>array应该返回的是array 为什么直接是 字符串？
+因为不管是array 还是 function 原型上的 toString 方法都被重写了，删除之前重写的方法 会导致 tostring方法重新找到 Object上的内置方法，然后正常返回类型如下
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 删除各对象改写的原型方法</span><br><span class="hljs-keyword">delete</span> <span class="hljs-built_in">Array</span>.prototype.toString<br><span class="hljs-keyword">delete</span> <span class="hljs-built_in">Function</span>.prototype.toString<br><br><span class="hljs-comment">// 然后进行使用</span><br><span class="hljs-built_in">Array</span>.prototype.toString() <span class="hljs-comment">// [object array] </span><br>[].toString() <span class="hljs-comment">// [object array] </span><br></code></pre></td></tr></table></figure>
+
+
+
+所以 想用 不被修改的 tostring方法直接 就得 Object.prototype.toString.call()
+
+MDN 示例代码如下
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">var</span> toString = <span class="hljs-built_in">Object</span>.prototype.toString;<br><br>toString.call(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>); <span class="hljs-comment">// [object Date]</span><br>toString.call(<span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>); <span class="hljs-comment">// [object String]</span><br>toString.call(<span class="hljs-built_in">Math</span>); <span class="hljs-comment">// [object Math]</span><br><br><span class="hljs-comment">//Since JavaScript 1.8.5</span><br>toString.call(<span class="hljs-literal">undefined</span>); <span class="hljs-comment">// [object Undefined]</span><br>toString.call(<span class="hljs-literal">null</span>); <span class="hljs-comment">// [object Null]</span><br></code></pre></td></tr></table></figure>
+
+MDN 只是说了用法 却没有说原因 咱们还是不知道为什么这样可以识别类型，继续科学搜索。
+
+在掘金上有搜到 一篇文章 说了 tostring为什么 会返回类型。 
+
+- ES5
+
+  因为当一个 值 比如 A 在调用Object的tostring时 ，A值内部的 [[class]] 会被返回出来，这个class 就是js已经定义好的内部属性，值为一个类型字符串，可以用来判断值的类型。
+
+  详细解释
+
+  &gt; 本规范的每种内置对象都定义了 [[Class]] 内部属性的值。宿主对象的 [[Class]] 内部属性的值可以是除了 &quot;Arguments&quot;, &quot;Array&quot;, &quot;Boolean&quot;, &quot;Date&quot;, &quot;Error&quot;, &quot;Function&quot;, &quot;JSON&quot;, &quot;Math&quot;, &quot;Number&quot;, &quot;Object&quot;, &quot;RegExp&quot;, &quot;String&quot; 的任何字符串。[[Class]] 内部属性的值用于内部区分对象的种类。注，本规范中除了通过 Object.prototype.toString ( 见 15.2.4.2) 没有提供任何手段使程序访问此值。
+
+- ES6
+
+  &gt; 之前的 `[[Class]]` 不再使用，取而代之的是一系列的 `internal slot`，Internal slots 对应于与对象相关联并由各种ECMAScript规范算法使用的内部状态，它们没有对象属性，也不能被继承，根据具体的 Internal slot 规范，这种状态可以由任何ECMAScript语言类型或特定ECMAScript规范类型值的值组成
+
+
+
+
+
+文章链接 [谈谈 Object.prototype.toString](https://juejin.cn/post/6844903477940846600)</code></pre>
+<h2 id="JS中值的存储"><a href="#JS中值的存储" class="headerlink" title="JS中值的存储"></a>JS中值的存储</h2><blockquote>
+<p>在存储之前需要熟悉一些概念，比如 栈 比如 堆，以及内存。可以先简单看一下下面的参考文档了解</p>
+</blockquote>
+<h3 id="引用类型的存储"><a href="#引用类型的存储" class="headerlink" title="引用类型的存储"></a>引用类型的存储</h3><p>分为两部分存储，一个是地址，用栈的方式存储，一个是类型本身 在堆里存储，所以引用类型的赋值 会导致 浅拷贝问题，导致两个变量引用的是同一个值</p>
+<h3 id="值类型的存储"><a href="#值类型的存储" class="headerlink" title="值类型的存储"></a>值类型的存储</h3><p>值类型 直接使用 栈存储的方式存储的，每次赋值都是创建一个新的内存对象，修改取值 赋值也更快</p>
+<h3 id="不同值得存储所导致得问题"><a href="#不同值得存储所导致得问题" class="headerlink" title="不同值得存储所导致得问题"></a>不同值得存储所导致得问题</h3><h4 id="深浅拷贝问题"><a href="#深浅拷贝问题" class="headerlink" title="深浅拷贝问题"></a>深浅拷贝问题</h4><p>浅拷贝就是引用值所导致的</p>
+<ul>
+<li>缺点<ul>
+<li>会导致值的污染</li>
+</ul>
+</li>
+<li>解决方案<ul>
+<li>JSON序列化<ul>
+<li>缺点<ul>
+<li>耗时长</li>
+<li>会导致 import 引入的东西 和function 都变为字符串</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>递归解决</li>
+</ul>
+</li>
+</ul>
+<h2 id="关于BigInt"><a href="#关于BigInt" class="headerlink" title="关于BigInt"></a>关于BigInt</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/toString">Object.prototype.toString</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903477940846600">谈谈 Object.prototype.toString</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903873992196110">「前端进阶」JS中的栈内存堆内存</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903869525262349">「前端进阶」JS中的内存管理</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903869525262349">为什么用Object.prototype.toString.call(obj)检测对象类型?</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/319926787">栈究竟在哪里？</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2013/11/stack.html">Stack的三种含义</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E5%89%8D%E7%AB%AF/">前端</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/js/">js</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/02/25/%E5%88%9D%E5%AD%A6%E8%80%85%E8%B4%AD%E4%B9%B0%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">初学者购买服务器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2020/11/25/react%E7%9A%84redux/">
+                        <span class="hidden-mobile">react的状态管理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>浏览器中的网络 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="浏览器中的网络">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-25 11:10" pubdate>
+        2021年8月25日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      37
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">浏览器中的网络</h1>
+            
+            <div class="markdown-body">
+              <h1 id="浏览器中的网络"><a href="#浏览器中的网络" class="headerlink" title="浏览器中的网络"></a>浏览器中的网络</h1><h2 id="HTTP-1-HTTP性能优化"><a href="#HTTP-1-HTTP性能优化" class="headerlink" title="HTTP/1: HTTP性能优化"></a>HTTP/1: HTTP性能优化</h2><blockquote>
+<p>浏览器与服务器的通信语言</p>
+</blockquote>
+<h3 id="超文本传输协议HTTP-0-9"><a href="#超文本传输协议HTTP-0-9" class="headerlink" title="超文本传输协议HTTP/0.9"></a>超文本传输协议HTTP/0.9</h3><blockquote>
+<p>HTTP/0.9 是于 1991 年提出的，主要用于学术交流，需求很简单——用来在网络之间传递 HTML 超文本的内容，所以被称为超文本传输协议。</p>
+</blockquote>
+<h4 id="HTTP-0-9-完整请求流程"><a href="#HTTP-0-9-完整请求流程" class="headerlink" title="HTTP/0.9 完整请求流程"></a>HTTP/0.9 完整请求流程</h4><ul>
+<li>因为 HTTP 都是基于 TCP 协议的，所以客户端先要根据 IP 地址、端口和服务器建立 TCP 连接，而建立连接的过程就是 TCP 协议三次握手的过程。</li>
+<li>建立好连接之后，会发送一个 GET 请求行的信息，如GET /index.html用来获取 index.html。</li>
+<li>服务器接收请求信息之后，读取对应的 HTML 文件，并将数据以 ASCII 字符流返回给客户端。</li>
+<li>HTML 文档传输完成后，断开连接。</li>
+</ul>
+<p><img src="https://static001.geekbang.org/resource/image/db/34/db1166c68c22a45c9858e88a234f1a34.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
+<li>第一个是只有一个请求行，并没有 HTTP 请求头和请求体，因为只需要一个请求行就可以完整表达客户端的需求了。</li>
+<li>第二个是服务器也没有返回头信息，这是因为服务器端并不需要告诉客户端太多信息，只需要返回数据就可以了。</li>
+<li>第三个是返回的文件内容是以 ASCII 字符流来传输的，因为都是 HTML 格式的文件，所以使用 ASCII 字节码来传输是最合适的。<a target="_blank" rel="noopener" href="https://segmentfault.com/q/1010000010875486/a-1020000010879359">原因</a></li>
+</ul>
+<h3 id="被浏览器推动的-HTTP-1-0"><a href="#被浏览器推动的-HTTP-1-0" class="headerlink" title="被浏览器推动的 HTTP/1.0"></a>被浏览器推动的 HTTP/1.0</h3><ul>
+<li><p>原因</p>
+<ul>
+<li>网景新出的浏览器不仅仅支持了HTML文件还包括了JS，css，图片，音频，视频等。因此支持多种类型的文件下载是 HTTP/1.0 的一个核心诉求，而且文件格式不仅仅局限于 ASCII 编码，还有很多其他类型编码的文件。</li>
+</ul>
+</li>
+<li><p>实现多种数据类型的方式</p>
+<ul>
+<li><p>HTTP/1.0 引入请求头与响应头，以key-value的形式保存，HTTP请求会带上请求头信息，服务器返回数据时，会先返回响应头信息</p>
+<p><img src="https://static001.geekbang.org/resource/image/b5/7d/b52b0d1a26ff2b8607c08e5c50ae687d.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+</li>
+<li><p>浏览器需要知道服务器返回数据的类型，浏览器才能根据不同的数据类型做针对性处理</p>
+</li>
+<li><p>因为数据量越来越大，为了减轻传输性能，服务器会对数据进行压缩后再传输，所以浏览器需要知道服务器的压缩方法</p>
+</li>
+<li><p>万维网时全球范围的，所以需要提供国际化的支持，需要浏览器告诉服务器需要什么语言版本的页面</p>
+</li>
+<li><p>增加不同类型的文件，而每种文件编码形式又可能不一样，为了能够准确地读取文件，浏览器需要知道文件的编码类型</p>
+<p>HTTP/1.0的请求头</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js">accept: text/html <span class="hljs-comment">// 文件类型</span><br>accept-encoding: gzip, deflate, br <span class="hljs-comment">// 压缩方式</span><br>accept-Charset: ISO-<span class="hljs-number">8859</span>-<span class="hljs-number">1</span>,utf-<span class="hljs-number">8</span> <span class="hljs-comment">// 文件编码</span><br>accept-language: zh-CN,zh <span class="hljs-comment">// 优先语言是中文</span><br></code></pre></td></tr></table></figure>
+
+<p>比如服务器不支持gzip，支支持br压缩，那么响应头就会带有 压缩类型，如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js">content-encoding: br<br>content-type: text/html; charset=UTF-<span class="hljs-number">8</span><br></code></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>HTTP/0.1其他特性</p>
+<ul>
+<li>服务器有可能出错，需要浏览器进行错误处理，所以就引入了<code>状态码</code>，是通过响应行的方式来通知浏览器的</li>
+<li>为了减轻服务器压力，在HTTP/1.0提供了<code>Cache缓存</code>，用来缓存已经下载过的数据</li>
+<li>服务器需要统计客户端基础信息，在1.0请求头中还加入了<code>用户代理</code>的字段</li>
+</ul>
+</li>
+</ul>
+<h3 id="缝缝补补的HTTP-1-1"><a href="#缝缝补补的HTTP-1-1" class="headerlink" title="缝缝补补的HTTP/1.1"></a>缝缝补补的HTTP/1.1</h3><ul>
+<li>改进持久连接<ul>
+<li>HTTP/1.1 中增加了持久连接的方法，它的特点是在一个 TCP 连接上可以传输多个 HTTP 请求，只要浏览器或者服务器没有明确断开连接，那么该 TCP 连接会一直保持。</li>
+</ul>
+</li>
+<li>不成熟的HTTP管线化<ul>
+<li>持久连接能减少TCP的建立与断开次数，但是它需要等待前面的请求返回之后，才能进行下次请求，TCP通道中某个请求因为某些原因没有即使返回，就会阻塞后面的所有请求，这个就是<code>队头阻塞</code>的问题</li>
+<li>HTTP/1.1 中的管线化是指将多个 HTTP 请求整批提交给服务器的技术，虽然可以整批发送请求，不过服务器依然需要根据请求顺序来回复浏览器的请求。不过因为各种原因，特们最终都放弃了管线化技术</li>
+</ul>
+</li>
+<li>提供虚拟机支持<ul>
+<li>在 HTTP/1.0 中，每个域名绑定了一个唯一的 IP 地址，因此一个服务器只能支持一个域名。但是随着虚拟主机技术的发展，需要实现在一台物理主机上绑定多个虚拟主机，每个虚拟主机都有自己的单独的域名，这些单独的域名都公用同一个 IP 地址。因此，HTTP/1.1 的请求头中增加了 Host 字段，用来表示当前的域名地址，这样服务器就可以根据不同的 Host 值做不同的处理。</li>
+</ul>
+</li>
+<li>对动态生成的内容提供了完美支持<ul>
+<li>在设计 HTTP/1.0 时，需要在响应头中设置完整的数据大小，如Content-Length: 901，这样浏览器就可以根据设置的数据大小来接收数据</li>
+<li>不过随着服务器端的技术发展，很多页面的内容都是动态生成的，因此在传输数据之前并不知道最终的数据大小，这就导致了浏览器不知道何时会接收完所有的文件数据。</li>
+<li>HTTP/1.1 通过引入 Chunk transfer 机制来解决这个问题，服务器会将数据分割成若干个任意大小的数据块，每个数据块发送时会附上上个数据块的长度，最后使用一个零长度的块作为发送数据完成的标志。这样就提供了对动态内容的支持。</li>
+</ul>
+</li>
+</ul>
+<h2 id="HTTP-2-如何提升网络速度"><a href="#HTTP-2-如何提升网络速度" class="headerlink" title="HTTP/2 如何提升网络速度"></a>HTTP/2 如何提升网络速度</h2><h3 id="HTTP1-1的主要问题"><a href="#HTTP1-1的主要问题" class="headerlink" title="HTTP1.1的主要问题"></a>HTTP1.1的主要问题</h3><blockquote>
+<p>带宽是指每秒最大能发送或者接收的字节数, 我们把每秒能发送的最大字节数称为上行带宽，每秒能够接收的最大字节数称为下行带宽。</p>
+</blockquote>
+<ul>
+<li>对带宽的利用率不理想<ul>
+<li>第一个原因，TCP 的慢启动。</li>
+<li>第二个原因，同时开启了多条 TCP 连接，那么这些连接会竞争固定的带宽。</li>
+<li>第三个原因，HTTP/1.1 队头阻塞的问题。</li>
+</ul>
+</li>
+</ul>
+<h3 id="HTTP-2的多路复用"><a href="#HTTP-2的多路复用" class="headerlink" title="HTTP/2的多路复用"></a>HTTP/2的多路复用</h3><ul>
+<li>一个域名只使用一个TCP长连接来传输数据，这样整个页面资源的下载过程只需要一次慢启动，同时也避免了多个 TCP 连接竞争带宽所带来的问题</li>
+<li>HTTP/2 需要实现资源的并行请求，也就是任何时候都可以将请求发送给服务器，而并不需要等待其他请求的完成，然后服务器也可以随时返回处理好的请求资源给浏览器。</li>
+<li>多路复用图解<ul>
+<li>图中你会发现每个请求都有一个对应的 ID，如 stream1 表示 index.html 的请求，stream2 表示 foo.css 的请求。这样在浏览器端，就可以随时将请求发送给服务器了。</li>
+<li>服务器端接收到这些请求后，会根据自己的喜好来决定优先返回哪些内容，比如服务器可能早就缓存好了 index.html 和 bar.js 的响应头信息，那么当接收到请求的时候就可以立即把 index.html 和 bar.js 的响应头信息返回给浏览器，然后再将 index.html 和 bar.js 的响应体数据返回给浏览器，之所以可以随意发送，是因为每份数据都有对应的 ID，浏览器接收到之后，会筛选出相同 ID 的内容，将其拼接为完整的 HTTP 响应数据。</li>
+<li>HTTP/2 使用了多路复用技术，可以将请求分成一帧一帧的数据去传输，这样带来了一个额外的好处，就是当收到一个优先级高的请求时，比如接收到 JavaScript 或者 CSS 关键资源的请求，服务器可以暂停之前的请求来优先处理关键资源的请求。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://static001.geekbang.org/resource/image/0a/00/0a990f86ad9c19fd7d7620b2ef7ee900.jpg" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<h3 id="多路复用的实现"><a href="#多路复用的实现" class="headerlink" title="多路复用的实现"></a>多路复用的实现</h3><p>图解</p>
+<p><img src="https://static001.geekbang.org/resource/image/86/6a/86cdf01a3af7f4f755d28917e58aae6a.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<p>在TCP层又加了一层 <strong>二进制分帧层</strong>， 就实现了 HTTP 的多路复用技术。</p>
+<ul>
+<li>首先，浏览器准备好请求数据，包括了请求行、请求头等信息，如果是 POST 方法，那么还要有请求体</li>
+<li>这些数据经过二进制分帧层处理之后，会被转换为一个个带有请求 ID 编号的帧，通过协议栈将这些帧发送给服务器。</li>
+<li>服务器接收到所有帧之后，会将所有相同 ID 的帧合并为一条完整的请求信息。</li>
+<li>然后服务器处理该条请求，并将处理的响应行、响应头和响应体分别发送至二进制分帧层。</li>
+<li>同样，二进制分帧层会将这些响应数据转换为一个个带有请求 ID 编号的帧，经过协议栈发送给浏览器。</li>
+<li>浏览器接收到响应帧之后，会根据 ID 编号将帧的数据提交给对应的请求。</li>
+</ul>
+<p>HTTP2只改变了传输方式，其他都没有改变</p>
+<h3 id="HTTP-2-其他特性"><a href="#HTTP-2-其他特性" class="headerlink" title="HTTP/2 其他特性"></a>HTTP/2 其他特性</h3><ul>
+<li>设置请求优先级<ul>
+<li>发送请求时，可以标记请求优先级，服务器接到后就会优先处理优先级高的请求</li>
+</ul>
+</li>
+<li>服务器推送<ul>
+<li>直接将数据提前推送给浏览器，用户请求HTML文件，相关的JS和css文件重要，就直接一起发给浏览器</li>
+</ul>
+</li>
+<li>头部压缩<ul>
+<li>对请求头和响应头进行了压缩</li>
+</ul>
+</li>
+</ul>
+<h2 id="HTTP-3：甩掉TCP、TLS-的包袱，构建高效网络"><a href="#HTTP-3：甩掉TCP、TLS-的包袱，构建高效网络" class="headerlink" title="HTTP/3：甩掉TCP、TLS 的包袱，构建高效网络"></a>HTTP/3：甩掉TCP、TLS 的包袱，构建高效网络</h2><h3 id="TCP存在的问题"><a href="#TCP存在的问题" class="headerlink" title="TCP存在的问题"></a>TCP存在的问题</h3><ul>
+<li><p>TCP的队头阻塞</p>
+<ul>
+<li><p>因为http2还是基于TCP协议，所以还存在阻塞问题，有一个数据因为网络故障或者其他原因而丢包了，那么整个 TCP 的连接就会处于暂停状态，需要等待丢失的数据包被重新传输过来。</p>
+</li>
+<li><p>在 TCP 传输过程中，由于单个数据包的丢失而造成的阻塞称为 TCP 上的队头阻塞。下图是http2丢包传输阻塞</p>
+<p><img src="https://static001.geekbang.org/resource/image/48/d1/4837434655a6d87f1bf5e3d899a698d1.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+</li>
+<li><p>当系统达到了 2% 的丢包率时，HTTP/1.1 的传输效率反而比 HTTP/2 表现得更好。</p>
+</li>
+</ul>
+</li>
+<li><p>TCP建立连接的延时</p>
+<ul>
+<li><p>网络延迟又称 RTT(Round Trip Time)，我们把从浏览器发送一个数据包到服务器，再从服务器返回数据包到浏览器的整个往返时间称为 RTT，如下</p>
+<p><img src="https://static001.geekbang.org/resource/image/e9/4f/e98927e19b20349815fb8f499067cb4f.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+</li>
+<li><p>建立TCP协议需要和服务器三次握手，需要1.5个RTT，如果有HTTPS，TLS协议还需要一个握手过程，因为TSL协议不同需要握手时间也不同大概1<del>2个RTT，在传输数据之前，需要花掉3</del>4个RTT，如果服务器距离进 一个 RTT可能在10ms之内，如果远那么就在100ms以上了，所以整个过程可能在30-40ms or 300-400ms，用户可以明显感觉到卡顿了</p>
+</li>
+</ul>
+</li>
+<li><p>TCP协议僵化</p>
+<p>我们知道TCP协议存在问题，那么能不能修改呢 答案是<strong>非常困难</strong></p>
+<ul>
+<li>中间设备的僵化<ul>
+<li>互联网是一个网状结构，为了能够保障互联网的正常工作，我们需要在互联网的各处搭建各种设备，这些设备就被称为中间设备。</li>
+<li>这些设备包括了路由器、防火墙、NAT、交换机等。它们通常依赖一些很少升级的软件，这些软件使用了大量的 TCP 特性，这些功能被设置之后就很少更新了。</li>
+<li>如果我们在客户端升级了 TCP 协议，但是当新协议的数据包经过这些中间设备时，它们可能不理解包的内容，于是这些数据就会被丢弃掉。这就是中间设备僵化，它是阻碍 TCP 更新的一大障碍。</li>
+</ul>
+</li>
+<li>操作系统僵化<ul>
+<li>TCP 协议都是通过操作系统内核来实现的，应用程序只能使用不能修改。通常操作系统的更新都滞后于软件的更新，因此要想自由地更新内核中的 TCP 协议也是非常困难的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="QUIC-协议"><a href="#QUIC-协议" class="headerlink" title="QUIC 协议"></a>QUIC 协议</h3><p>  因为TCP本身局限性，以及设备和操作系统的僵化，HTTP/3 选择了一个折中的方法——UDP 协议，基于 UDP 实现了类似于 TCP 的多路数据流、传输可靠性等功能，我们把这套功能称为<strong>QUIC 协议</strong>，如下</p>
+<p><img src="https://static001.geekbang.org/resource/image/0b/c6/0bae470bb49747b9a59f9f4bb496a9c6.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<ul>
+<li>QUIC协议的功能<ul>
+<li>实现了类似 TCP 的流量控制、传输可靠性的功能</li>
+<li>集成了 TLS 加密功能，目前 QUIC 使用的是 TLS1.3，相较于早期版本 TLS1.3 有更多的优点，其中最重要的一点是减少了握手所花费的 RTT 个数。</li>
+<li>实现了 HTTP/2 中的多路复用功能</li>
+<li>实现了快速握手功能</li>
+</ul>
+</li>
+</ul>
+<h3 id="HTTP-3的挑战"><a href="#HTTP-3的挑战" class="headerlink" title="HTTP/3的挑战"></a>HTTP/3的挑战</h3><ul>
+<li>从目前的情况来看，服务器和浏览器端都没有对 HTTP/3 提供比较完整的支持。Chrome 虽然在数年前就开始支持 Google 版本的 QUIC，但是这个版本的 QUIC 和官方的 QUIC 存在着非常大的差异。</li>
+<li>部署 HTTP/3 也存在着非常大的问题。因为系统内核对 UDP 的优化远远没有达到 TCP 的优化程度，这也是阻碍 QUIC 的一个重要原因。</li>
+<li>中间设备僵化的问题。这些设备对 UDP 的优化程度远远低于 TCP，据统计使用 QUIC 协议时，大约有 3%～7% 的丢包率。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/iF0wbV5o7HVjGG_Cb-RcOg">HTTP/3原理与实践</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5/">浏览器工作原理与实践</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/08/25/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%ADJS%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">浏览器中JS的执行机制</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/08/25/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8/">
+                        <span class="hidden-mobile">浏览器安全</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>

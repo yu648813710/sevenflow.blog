@@ -1,0 +1,639 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>浅谈富文本编辑器 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="浅谈富文本编辑器">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-19 22:41" pubdate>
+        2022年4月19日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      22
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">浅谈富文本编辑器</h1>
+            
+            <div class="markdown-body">
+              <hr>
+<h2 id="一些概念与误解"><a href="#一些概念与误解" class="headerlink" title="一些概念与误解"></a>一些概念与误解</h2><h3 id="什么是富文本？"><a href="#什么是富文本？" class="headerlink" title="什么是富文本？"></a>什么是富文本？</h3><p>微软公司开发用来多平台阅读编辑的一种文件类型，RTF文档（Rich Text Forma），类似于word，现在多数指对文字可进行编辑排版的工具，如vscode也可以称为富文本</p>
+<h3 id="前端所说的富文本指的是？"><a href="#前端所说的富文本指的是？" class="headerlink" title="前端所说的富文本指的是？"></a>前端所说的富文本指的是？</h3><p>统一是web端的富文本编辑器，也具备多端能力主要是网页本身具备多端运行能力</p>
+<h2 id="常用的富文本编辑器"><a href="#常用的富文本编辑器" class="headerlink" title="常用的富文本编辑器"></a>常用的富文本编辑器</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://fex.baidu.com/ueditor/">百度 UEditor</a></li>
+<li><a target="_blank" rel="noopener" href="https://quilljs.com/">quilljs</a></li>
+<li><a href="https://github.com/wangeditor-team/wangEditor">wangEditor</a>  </li>
+<li>Google Doc 与 腾讯文档</li>
+</ul>
+<h2 id="富文本编辑器的类型"><a href="#富文本编辑器的类型" class="headerlink" title="富文本编辑器的类型"></a>富文本编辑器的类型</h2><blockquote>
+<p>来源于  <a target="_blank" rel="noopener" href="https://juejin.cn/post/6952429235743129636">document.execCommand的探索</a></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+<th>代表</th>
+<th>优劣</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>L0</td>
+<td>1. 基于浏览器的contenteditable属性完成富文本输入框<br/>2. 使用document.execCommand操作命令完成排版</td>
+<td>轻量级编辑器<br/>典型代表：wangEditor，UEditor</td>
+<td>优：短时间内快速研发<br />劣：可定制空间非常有限</td>
+</tr>
+<tr>
+<td>L1</td>
+<td>1. 基于浏览器的contentditable属性富文本输入框<br/>2. 自主实现操作命令完成排版</td>
+<td>典型代表：draft.js(初始化了一个编辑区)、TinyMCE等</td>
+<td>优：在浏览器的基础上，能满足大部分业务<br />劣：无法突破浏览器本身的排版效果，性能与HTML的局限问题</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>1. 自主实现富文本输入框<br/>2. 只依赖少量浏览器API</td>
+<td>Google Doc,腾讯文档，</td>
+<td>优：都自己实现，可控度都掌握在开发者手里<br />劣：技术难度大</td>
+</tr>
+</tbody></table>
+<p>此次分享仅仅针对 L0与L1做一次技术分享</p>
+<h2 id="关于contenteditable-属性"><a href="#关于contenteditable-属性" class="headerlink" title="关于contenteditable 属性"></a>关于contenteditable 属性</h2><p>[全局属性]<a href="%E6%89%80%E6%9C%89html%E5%85%83%E7%B4%A0%E5%B1%9E%E6%80%A7">https://developer.mozilla.org/zh-CN/docs/Web/HTML/Global_attributes</a> <strong>contenteditable</strong> 是一个枚举属性，表示元素是否可被用户编辑。 如果可以，浏览器会修改元素的部件以允许编辑, 默认继承父元素的当前属性值</p>
+<ul>
+<li><p>注意事项</p>
+<ul>
+<li>该属性是一个枚举属性，而非布尔属性。这意味着必须显式设置其值为 <code>true</code>、<code>false</code> 或空字符串中的一个，并且不允许简写为 <code>&lt;label contenteditable&gt;Example Label&lt;/label&gt;</code>正确的用法是 <code>&lt;label contenteditable=&quot;true&quot;&gt;Example Label&lt;/label&gt;</code>。</li>
+</ul>
+</li>
+<li><p>oninput事件</p>
+<ul>
+<li>通过事件对象可获取编辑区域的Dom对象，从而拿到innerHtml 与innerText</li>
+</ul>
+</li>
+</ul>
+<p>举例</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> React, &#123; useState, useCallback &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">App</span>(<span class="hljs-params"></span>) </span>&#123;<br>    <span class="hljs-keyword">const</span> [isEdit, setIsEdit] = useState(<span class="hljs-literal">true</span>);<br>   <span class="hljs-keyword">const</span> [htmlIfo, setHtmlIfo] = useState(<span class="hljs-literal">null</span>);<br><br>   <span class="hljs-keyword">const</span> onEdit = useCallback(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>     <span class="hljs-keyword">const</span> target = e.target;<br>     setHtmlIfo(target.innerHTML);<br>      &#125;, []);<br>    <br>    <span class="hljs-keyword">return</span> (<br>           &lt;div<br>            className=<span class="hljs-string">&quot;demoBox&quot;</span><br>            contentEditable=&#123;isEdit&#125;<br>            suppressContentEditableWarning<br>            onInput=&#123;onEdit&#125;<br>          &gt;<br>            &lt;h2&gt;我是标题&lt;/h2&gt;<br>            &lt;p&gt;我是段落&lt;/p&gt;<br>            &lt;p&gt;我是图片&lt;/p&gt;<br>          &lt;/div&gt;<br>      );<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App;<br></code></pre></td></tr></table></figure>
+
+<h2 id="关于-document-execCommand-的JS-方法"><a href="#关于-document-execCommand-的JS-方法" class="headerlink" title="关于 document.execCommand 的JS 方法"></a>关于 document.execCommand 的JS 方法</h2><h3 id="document-execCommand的介绍"><a href="#document-execCommand的介绍" class="headerlink" title="document.execCommand的介绍"></a>document.execCommand的介绍</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand#%E5%91%BD%E4%BB%A4">execcommand文档</a><ul>
+<li>当一个HTML文档切换到<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/designMode">设计模式</a>时，<code>document</code>暴露 <strong><code>execCommand</code></strong> 方法，该方法允许运行命令来操纵<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/Global_attributes/contenteditable">可编辑内容区域</a>的元素。大多数命令影响<code>document</code>的 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Selection">selection</a>（粗体，斜体等）</li>
+</ul>
+</li>
+<li>设计模式<ul>
+<li><strong><code>document.designMode</code></strong> 控制整个文档是否可编辑。</li>
+</ul>
+</li>
+<li>selection对象<ul>
+<li>对象表示用户选择的文本范围或插入符号的当前位置。它代表页面中的文本选区，可能横跨多个元素。</li>
+</ul>
+</li>
+</ul>
+<p>举例</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> React, &#123; useState, useCallback &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-keyword">const</span> commandMapData = [<br>  &#123;<br>    name: <span class="hljs-string">&quot;背景色&quot;</span>,<br>    commandKey: <span class="hljs-string">&quot;backColor&quot;</span>,<br>    value: <span class="hljs-string">&quot;#ccc&quot;</span>,<br>  &#125;,<br>  &#123;<br>    name: <span class="hljs-string">&quot;字体色&quot;</span>,<br>    commandKey: <span class="hljs-string">&quot;foreColor&quot;</span>,<br>    value: <span class="hljs-string">&quot;red&quot;</span>,<br>  &#125;,<br>  &#123;<br>    name: <span class="hljs-string">&quot;字体加粗&quot;</span>,<br>    commandKey: <span class="hljs-string">&quot;bold&quot;</span>,<br>  &#125;,<br>  &#123;<br>    name: <span class="hljs-string">&quot;删除&quot;</span>,<br>    commandKey: <span class="hljs-string">&quot;delete&quot;</span>,<br>  &#125;,<br>  &#123;<br>    name: <span class="hljs-string">&quot;撤销&quot;</span>,<br>    commandKey: <span class="hljs-string">&quot;undo&quot;</span>,<br>  &#125;,<br>  &#123;<br>    name: <span class="hljs-string">&quot;恢复&quot;</span>,<br>    commandKey: <span class="hljs-string">&quot;redo&quot;</span>,<br>  &#125;,<br>];<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">App</span>(<span class="hljs-params"></span>) </span>&#123;<br>    <span class="hljs-keyword">const</span> [isEdit, setIsEdit] = useState(<span class="hljs-literal">true</span>);<br>   <span class="hljs-keyword">const</span> [htmlIfo, setHtmlIfo] = useState(<span class="hljs-literal">null</span>);<br><br>   <span class="hljs-keyword">const</span> onEdit = useCallback(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>     <span class="hljs-keyword">const</span> target = e.target;<br>     setHtmlIfo(target.innerHTML);<br>      &#125;, []);<br><br>      <span class="hljs-comment">// 执行指令</span><br>      <span class="hljs-keyword">const</span> actionCommand = useCallback(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>        <span class="hljs-keyword">const</span> key = e.target.dataset.key;<br><br>        <span class="hljs-keyword">const</span> index = commandMapData.findIndex(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> res.commandKey === key);<br>        <span class="hljs-built_in">document</span>.execCommand(key, <span class="hljs-literal">false</span>, commandMapData[index].value);<br>      &#125;, []);<br>    <br>    <span class="hljs-keyword">return</span> (<br>           &lt;div&gt;<br>            &lt;div&gt;<br>              &#123;commandMapData.map(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> (<br>                &lt;button<br>                  key=&#123;res.commandKey&#125;<br>                  data-key=&#123;res.commandKey&#125;<br>                  onClick=&#123;actionCommand&#125;<br>                &gt;<br>                  &#123;res.name&#125;<br>                &lt;/button&gt;<br>              ))&#125;<br>            &lt;/div&gt;<br>         &lt;div<br>                className=<span class="hljs-string">&quot;demoBox&quot;</span><br>                contentEditable=&#123;isEdit&#125;<br>                suppressContentEditableWarning<br>                onInput=&#123;onEdit&#125;<br>              &gt;<br>                &lt;h2&gt;我是标题&lt;/h2&gt;<br>                &lt;p&gt;我是段落&lt;/p&gt;<br>                &lt;p&gt;我是图片&lt;/p&gt;<br>              &lt;/div&gt;   <br>            &lt;/div&gt;<br>      );<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> App;<br></code></pre></td></tr></table></figure>
+
+<h3 id="document-execCommand的局限性"><a href="#document-execCommand的局限性" class="headerlink" title="document.execCommand的局限性"></a>document.execCommand的局限性</h3><ul>
+<li>兼容性问题，MDN已经显示主流浏览器废弃了这个api<ul>
+<li>但是现在firefox还是chrom 等主流浏览器都还是支持的，所以废弃态度更像是不维护，不修复</li>
+</ul>
+</li>
+<li>缺乏扩展性，一些业务BUG<ul>
+<li>undo与 redo的全局影响</li>
+<li>排版受限，排版必须按照指定命令来执行</li>
+<li>等等</li>
+</ul>
+</li>
+</ul>
+<h2 id="业界富文本组件在做什么？"><a href="#业界富文本组件在做什么？" class="headerlink" title="业界富文本组件在做什么？"></a>业界富文本组件在做什么？</h2><blockquote>
+<p>既然有浏览器行业标准API，那么那些富文本编辑器代码是在干什么？</p>
+</blockquote>
+<ul>
+<li>处理 document.execCommand 的兼容问题<ul>
+<li>如 insertHTML 和 increaseFontSize 不支持IE浏览器<ul>
+<li>解决方案，利用selection找到光标位置，然后插入需要处理的数据</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>处理 document.execCommand 的业务逻辑BUG<ul>
+<li>如undo与 redo对整个页面进行操作<ul>
+<li>需要自己写一个栈数据，对用户操作记载，然后undo和redo</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>新的富文本利用selection和Range这两个属性重写 execCommand<ul>
+<li>下面会详细说</li>
+</ul>
+</li>
+<li>富文本功能的插件化<ul>
+<li>功能可配置化</li>
+</ul>
+</li>
+<li>处理 用户操作的负面问题<ul>
+<li>如xss攻击预防<ul>
+<li>字符串的正则检查，数据过滤</li>
+</ul>
+</li>
+<li>如复制粘贴去除无用节点（更多是从word文件复制过来）<ul>
+<li>正则检查，数据过滤</li>
+</ul>
+</li>
+<li>如图片插入上传与复制上传处理<ul>
+<li>插入上传利用 execCommand 可以做到，允许嵌入在线图片链接的</li>
+<li>静态图片上传</li>
+<li>复制上传需要监听 paste 事件，存在多种情况<ul>
+<li>单独复制图片<ul>
+<li>拿到 clipboardData 数据 然后进行处理</li>
+</ul>
+</li>
+<li>和文本一块复制图片（HTML格式）<ul>
+<li>复制图片为本地路径<ul>
+<li>暂无解决方案</li>
+</ul>
+</li>
+<li>复制图片为在线路径<ul>
+<li>在线路径 利用正侧查找 img 标签，单独请求链接 然后处理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="关于Selection-与-Range"><a href="#关于Selection-与-Range" class="headerlink" title="关于Selection 与 Range"></a>关于Selection 与 Range</h2><p>均为实验属性</p>
+<h4 id="Selection-对象"><a href="#Selection-对象" class="headerlink" title="Selection 对象"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Selection">Selection 对象</a></h4><blockquote>
+<p><code>Selection</code> 对象表示用户选择的文本范围或插入符号的当前位置。它代表页面中的文本选区，可能横跨多个元素。文本选区由用户拖拽鼠标经过文字而产生。</p>
+</blockquote>
+<p>所说的横跨多个元素，用户操作无法完成，必须JS进行选区添加，场景就是 多人协同修改文档，显示光标位置</p>
+<h4 id="Range对象"><a href="#Range对象" class="headerlink" title="Range对象"></a><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Range">Range对象</a></h4><blockquote>
+<p>表示一个包含节点与文本节点的一部分的文档片段</p>
+</blockquote>
+<p>可以说selection对象有选区，那么就会有range对象</p>
+<h3 id="尝试实现execCommand-功能"><a href="#尝试实现execCommand-功能" class="headerlink" title="尝试实现execCommand 功能"></a>尝试实现execCommand 功能</h3><p>已现有DEMO 为例，进行功能实现</p>
+<ul>
+<li><p>功能</p>
+<ul>
+<li>背景色</li>
+<li>字体色</li>
+<li>加粗</li>
+<li>撤销与恢复</li>
+</ul>
+</li>
+<li><p>方案</p>
+<ul>
+<li>获取光标选择区</li>
+<li>对光标选择区进行编辑</li>
+<li>undo与redo写一个数据操作栈，然后完成操作</li>
+</ul>
+</li>
+<li><p>难点？</p>
+<ul>
+<li>关于Range 范围的嵌套Dom处理</li>
+<li>关于undo与redo的光标位置处理</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>现有demo地址,<strong><a href="https://github.com/yu648813710/richTextDemo">richTextDemo</a></strong></p>
+</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6952429235743129636">document.execCommand的探索</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/38699645">为什么都说富文本编辑器是天坑？</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand">MDN 文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://drive.googleblog.com/2010/05/whats-different-about-new-google-docs.html">新版 Google 文档有什么不同？</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E5%89%8D%E7%AB%AF/">前端</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/js/">js</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2022/08/25/windows%E7%BB%88%E7%AB%AF%E4%BC%98%E5%8C%96/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">window终端优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2022/01/03/%E5%85%B3%E4%BA%8ETS%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/">
+                        <span class="hidden-mobile">关于网页适配的总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>

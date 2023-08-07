@@ -1,0 +1,630 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>浏览器安全 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="浏览器安全">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-25 11:10" pubdate>
+        2021年8月25日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      35
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">浏览器安全</h1>
+            
+            <div class="markdown-body">
+              <h1 id="浏览器安全"><a href="#浏览器安全" class="headerlink" title="浏览器安全"></a>浏览器安全</h1><ul>
+<li>web页面安全</li>
+<li>浏览器网络安全</li>
+<li>浏览器系统安全</li>
+</ul>
+<h2 id="同源策略：为什么XMLHttpRequest不能跨域请求资源？"><a href="#同源策略：为什么XMLHttpRequest不能跨域请求资源？" class="headerlink" title="同源策略：为什么XMLHttpRequest不能跨域请求资源？"></a>同源策略：为什么XMLHttpRequest不能跨域请求资源？</h2><ul>
+<li>浏览器页面中没有安全策略会怎么样？<ul>
+<li>修改银行站点的 DOM、CSSOM 等信息；</li>
+<li>在银行站点内部插入 JavaScript 脚本</li>
+<li>读取银行站点的 Cookie、IndexDB 等数据；</li>
+<li>甚至还可以将这些信息上传至自己的服务器，这样就可以在你不知情的情况下伪造一些转账请求等信息。</li>
+</ul>
+</li>
+</ul>
+<p>在没有安全保障的 Web 世界中，我们是没有隐私的，因此需要安全策略来保障我们的隐私和数据的安全。</p>
+<h3 id="页面中最基础，最核心的安全策略：同源策略"><a href="#页面中最基础，最核心的安全策略：同源策略" class="headerlink" title="页面中最基础，最核心的安全策略：同源策略"></a>页面中最基础，最核心的安全策略：同源策略</h3><ul>
+<li>什么是同源策略？<ul>
+<li>如果两个 URL 的协议、域名和端口都相同，我们就称这两个 URL 同源。</li>
+<li>浏览器默认两个相同的源之间是可以相互访问资源和操作 DOM 的。</li>
+<li>具体来讲，同源策略主要表现在 DOM、Web 数据和网络这三个层面。</li>
+</ul>
+</li>
+<li>DOM层面<ul>
+<li>同源策略限制了来自不同源的 JavaScript 脚本对当前 DOM 对象读和写的操作。</li>
+</ul>
+</li>
+<li>数据层面<ul>
+<li>同源策略限制了不同源的站点读取当前站点的 Cookie、IndexDB、LocalStorage 等数据。</li>
+</ul>
+</li>
+<li>网络层面<ul>
+<li>同源策略限制了通过 XMLHttpRequest 等方式将站点的数据发送给不同源的站点。</li>
+</ul>
+</li>
+</ul>
+<h3 id="安全以及便利性权衡"><a href="#安全以及便利性权衡" class="headerlink" title="安全以及便利性权衡"></a>安全以及便利性权衡</h3><p>让不同的源之间绝对隔离，无疑是最安全的措施，但这也会使得 Web 项目难以开发和使用，所以浏览器对同源策略做出了让步</p>
+<ul>
+<li>页面中可以嵌入第三方资源<ul>
+<li>如iframe，或者图片 css资源 js资源</li>
+<li>但是这样可能会导致有人恶意使用注入恶意代码，这就是xss攻击<ul>
+<li>为了解决xss攻击，浏览器引入了内容安全策略称为CSP</li>
+<li><strong>CSP 的核心思想是让服务器决定浏览器能够加载哪些资源，让服务器决定浏览器是否能够执行内联 JavaScript 代码</strong></li>
+<li>配置内容安全策略涉及到添加 Content-Security-Policy HTTP头部到一个页面，并配置相应的值，以控制用户代理（浏览器等）可以为该页面获取哪些资源。比如一个可以上传文件和显示图片页面，应该允许图片来自任何地方，但限制表单的action属性只可以赋值为指定的端点。一个经过恰当设计的内容安全策略应该可以有效的保护页面免受跨站脚本攻击 </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>跨域资源共享和跨文档消息机制<ul>
+<li>跨域资源共享（CORS），使用该机制可以进行跨域访问控制，从而使跨域数据传输得以安全进行。</li>
+<li>在实际应用中需要不同源DOM之前通信，所以加入了<strong>跨文档消息机制</strong>window.postMessage</li>
+</ul>
+</li>
+</ul>
+<h2 id="跨站脚本攻击（XSS）：为什么Cookie中有HttpOnly属性？"><a href="#跨站脚本攻击（XSS）：为什么Cookie中有HttpOnly属性？" class="headerlink" title="跨站脚本攻击（XSS）：为什么Cookie中有HttpOnly属性？"></a>跨站脚本攻击（XSS）：为什么Cookie中有HttpOnly属性？</h2><h3 id="什么是xss攻击？"><a href="#什么是xss攻击？" class="headerlink" title="什么是xss攻击？"></a>什么是xss攻击？</h3><blockquote>
+<p>是指黑客往 HTML 文件中或者 DOM 中注入恶意脚本，从而在用户浏览页面时利用注入的恶意脚本对用户实施攻击的一种手段。</p>
+</blockquote>
+<p>恶意脚本能做哪些事情？</p>
+<ul>
+<li>可以窃取 Cookie 信息<ul>
+<li>恶意 JavaScript 可以通过“document.cookie”获取 Cookie 信息，然后通过 XMLHttpRequest 或者 Fetch 加上 CORS 功能将数据发送给恶意服务器；恶意服务器拿到用户的 Cookie 信息之后，就可以在其他电脑上模拟用户的登录，然后进行转账等操作。</li>
+</ul>
+</li>
+<li>可以监听用户行为。<ul>
+<li>恶意 JavaScript 可以使用“addEventListener”接口来监听键盘事件，比如可以获取用户输入的信用卡等信息，将其发送到恶意服务器。黑客掌握了这些信息之后，又可以做很多违法的事情。</li>
+</ul>
+</li>
+<li>可以通过修改 DOM 伪造假的登录窗口，用来欺骗用户输入用户名和密码等信息。</li>
+<li>还可以在页面内生成浮窗广告，这些广告会严重地影响用户体验。</li>
+</ul>
+<h3 id="恶意脚本怎么注入？"><a href="#恶意脚本怎么注入？" class="headerlink" title="恶意脚本怎么注入？"></a>恶意脚本怎么注入？</h3><p>通常情况下，主要有存<strong>储型 XSS 攻击</strong>、<strong>反射型 XSS 攻击</strong>和<strong>基于 DOM 的 XSS</strong> 攻击三种方式来注入恶意脚本。</p>
+<ul>
+<li>存储型XSS攻击<ul>
+<li>首先黑客利用站点漏洞将一段恶意 JavaScript 代码提交到网站的数据库中；</li>
+<li>然后用户向网站请求包含了恶意 JavaScript 脚本的页面；</li>
+<li>当用户浏览该页面的时候，恶意脚本就会将用户的 Cookie 信息等数据上传到服务器。</li>
+</ul>
+</li>
+<li>反射型 XSS 攻击<ul>
+<li>用户将一段含有恶意代码的请求提交给 Web 服务器</li>
+<li>Web 服务器接收到请求时，又将恶意代码反射给了浏览器端</li>
+<li>比如 在url加入参数 页面会显示参数，如果直接加入script脚本，页面就会执行</li>
+<li>Web 服务器不会存储反射型 XSS 攻击的恶意脚本，这是和存储型 XSS 攻击不同的地方。</li>
+</ul>
+</li>
+<li>基于 DOM 的 XSS 攻击<ul>
+<li>基于 DOM 的 XSS 攻击是不牵涉到页面 Web 服务器的</li>
+<li>有通过 WiFi 路由器劫持的，有通过本地恶意软件来劫持的，它们的共同点是在 Web 资源传输过程或者在用户使用页面的过程中修改 Web 页面的数据。</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何阻止-XSS-攻击"><a href="#如何阻止-XSS-攻击" class="headerlink" title="如何阻止 XSS 攻击"></a>如何阻止 XSS 攻击</h3><p>存储型 XSS 攻击和反射型 XSS 攻击都是需要经过 Web 服务器来处理的，因此可以认为这两种类型的漏洞是服务端的安全漏洞，而基于 DOM 的 XSS 攻击全部都是在浏览器端完成的，因此基于 DOM 的 XSS 攻击是属于前端的安全漏洞</p>
+<ul>
+<li>服务器对输入脚本进行过滤或转码<ul>
+<li>不管是反射型还是存储型 XSS 攻击，我们都可以在服务器端将一些关键的字符进行转码</li>
+</ul>
+</li>
+<li>充分利用 CSP<ul>
+<li>限制加载其他域下的资源文件，这样即使黑客插入了一个 JavaScript 文件，这个 JavaScript 文件也是无法被加载的；</li>
+<li>禁止向第三方域提交数据，这样用户数据也不会外泄；</li>
+<li>禁止执行内联脚本和未授权的脚本；</li>
+<li>还提供了上报机制，这样可以帮助我们尽快发现有哪些 XSS 攻击，以便尽快修复问题</li>
+</ul>
+</li>
+<li>使用 HttpOnly 属性<ul>
+<li>很多 XSS 攻击都是来盗用 Cookie 的，因此还可以通过使用 HttpOnly 属性来保护我们 Cookie 的安全。</li>
+<li>，使用 HttpOnly 标记的 Cookie 只能使用在 HTTP 请求过程中，所以无法通过 JavaScript 来读取这段 Cookie。</li>
+</ul>
+</li>
+</ul>
+<h2 id="CSRF攻击：陌生链接不要随便点"><a href="#CSRF攻击：陌生链接不要随便点" class="headerlink" title="CSRF攻击：陌生链接不要随便点"></a>CSRF攻击：陌生链接不要随便点</h2><h3 id="什么是-CSRF-攻击"><a href="#什么是-CSRF-攻击" class="headerlink" title="什么是 CSRF 攻击"></a>什么是 CSRF 攻击</h3><blockquote>
+<p>英文全称是 Cross-site request forgery，所以又称为“跨站请求伪造”，是指黑客引诱用户打开黑客的网站，在黑客的网站中，利用用户的登录状态发起的跨站请求,CSRF 攻击就是黑客利用了用户的登录状态，并通过第三方的站点来做一些坏事。</p>
+</blockquote>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p><img src="https://static001.geekbang.org/resource/image/3d/6b/3d7f097b1d6a8f93a960a12892f1556b.png" srcset="/sevenflow.blog/img/loading.gif" alt="img"></p>
+<ul>
+<li>首先 David 发起登录 Gmail 邮箱请求，然后 Gmail 服务器返回一些登录状态给 David 的浏览器，这些信息包括了 Cookie、Session 等，这样在 David 的浏览器中，Gmail 邮箱就处于登录状态了。</li>
+<li>接着黑客通过各种手段引诱 David 去打开他的链接，比如 hacker.com，然后在 hacker.com 页面中，黑客编写好了一个邮件过滤器，并通过 Gmail 提供的 HTTP 设置接口设置好了新的邮件过滤功能，该过滤器会将 David 所有的邮件都转发到黑客的邮箱中。</li>
+<li>最后的事情就很简单了，因为有了 David 的邮件内容，所以黑客就可以去域名服务商那边重置 David 域名账户的密码，重置好密码之后，就可以将其转出到黑客的账户了。</li>
+</ul>
+<p>通常当用户打开了黑客的页面后，黑客有三种方式去实施 CSRF 攻击。</p>
+<ul>
+<li><p>自动发起 Get 请求</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs html"><br><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>黑客的站点：CSRF攻击演示<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&#x27;hacker-form&#x27;</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&quot;https://time.geekbang.org/sendcoin&quot;</span> <span class="hljs-attr">method</span>=<span class="hljs-string">POST</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;user&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;hacker&quot;</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;number&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;100&quot;</span> /&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"> <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;hacker-form&#x27;</span>).submit(); </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>自动发起POST请求</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs html"><br><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>黑客的站点：CSRF攻击演示<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&#x27;hacker-form&#x27;</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&quot;https://time.geekbang.org/sendcoin&quot;</span> <span class="hljs-attr">method</span>=<span class="hljs-string">POST</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;user&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;hacker&quot;</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;number&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;100&quot;</span> /&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"> <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;hacker-form&#x27;</span>).submit(); </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>引诱用户点击链接</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs html"><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">width</span>=<span class="hljs-string">150</span> <span class="hljs-attr">src</span>=<span class="hljs-string">http://images.xuejuzi.cn/1612/1_161230185104_1.jpg</span>&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">img</span>&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://time.geekbang.org/sendcoin?user=hacker&amp;number=100&quot;</span> <span class="hljs-attr">taget</span>=<span class="hljs-string">&quot;_blank&quot;</span>&gt;</span><br>    点击下载美女照片<br>  <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>和 XSS 不同的是，CSRF 攻击不需要将恶意代码注入用户的页面，仅仅是利用服务器的漏洞和用户的登录状态来实施攻击。</p>
+<h3 id="如何防止CSRF攻击"><a href="#如何防止CSRF攻击" class="headerlink" title="如何防止CSRF攻击"></a>如何防止CSRF攻击</h3><p>先说发起CSRF攻击的三个必要条件</p>
+<ul>
+<li>目标站点一定要有CSRF漏洞</li>
+<li>用户要登陆过目标站点，并且在浏览器上保持登录状态</li>
+<li>需要用户打开一个第三方站点，可以是黑客的站点，也可以是一些论坛</li>
+</ul>
+<p>与 XSS 攻击不同，CSRF 攻击不会往页面注入恶意脚本，因此黑客是无法通过 CSRF 攻击来获取用户页面数据的；其最关键的一点是要能找到服务器的漏洞，所以说对于 CSRF 攻击我们主要的防护手段是提升服务器的安全性。</p>
+<p>防止遭受CSRF攻击：</p>
+<ul>
+<li><p>充分利用好 Cookie 的 SameSite 属性</p>
+<ul>
+<li><p>Cookie 正是浏览器和服务器之间维护登录状态的一个关键数据，因此要阻止 CSRF 攻击，我们首先就要考虑在 Cookie 上来做文章。</p>
+<ul>
+<li>如果是从第三方站点发起的请求，那么需要浏览器禁止发送某些关键 Cookie 数据到服务器；</li>
+<li>如果是同一个站点发起的请求，那么就需要保证 Cookie 数据正常发送。</li>
+</ul>
+</li>
+<li><p>Cookie 中的 SameSite 属性正是为了解决这个问题的</p>
+<ul>
+<li><pre><code class="js">set-cookie: 1P_JAR=2019-10-20-06; expires=Tue, 19-Nov-2019 06:36:21 GMT; path=/; domain=.google.com; SameSite=none</code></pre>
+</li>
+<li><p>SameSite 选项通常有 Strict、Lax 和 None 三个值</p>
+<ul>
+<li>Strict 最为严格。如果 SameSite 的值是 Strict，那么浏览器会完全禁止第三方 Cookie。</li>
+<li>Lax 相对宽松一点。在跨站点的情况下，从第三方站点的链接打开和从第三方站点提交 Get 方式的表单这两种方式都会携带 Cookie。但如果在第三方站点中使用 Post 方法，或者通过 img、iframe 等标签加载的 URL，这些场景都不会携带 Cookie。</li>
+<li>而如果使用 None 的话，在任何情况下都会发送 Cookie 数据。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>验证请求的来源站点，在服务器端验证请求来源的站点</p>
+<ul>
+<li>Referer：Referer 是 HTTP 请求头中的一个字段，记录了该 HTTP 请求的来源地址</li>
+<li>Origin ：Origin 属性只包含了域名信息，并没有包含具体的 URL 路径，这是 Origin 和 Referer 的一个主要区别</li>
+<li>服务器的策略是优先判断 Origin，如果请求头中没有包含 Origin 属性，再根据实际情况判断是否使用 Referer 值。</li>
+</ul>
+</li>
+<li><p>CSRF Token</p>
+<ul>
+<li>在浏览器向服务器发起请求时，服务器生成一个 CSRF Token</li>
+<li>在浏览器端如果要发起转账的请求，那么需要带上页面中的 CSRF Token，然后服务器会验证该 Token 是否合法，。如果是从第三方站点发出的请求，那么将无法获取到 CSRF Token 的值，所以即使发出了请求，服务器也会因为 CSRF Token 不正确而拒绝请求。</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5/">浏览器工作原理与实践</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/08/25/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">浏览器中的网络</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/08/25/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E5%BE%AA%E7%8E%AF%E7%B3%BB%E7%BB%9F/">
+                        <span class="hidden-mobile">浏览器中的页面循环系统</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>

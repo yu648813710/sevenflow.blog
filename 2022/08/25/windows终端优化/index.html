@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>window终端优化 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="window终端优化">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-08-25 11:10" pubdate>
+        2022年8月25日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">window终端优化</h1>
+            
+            <div class="markdown-body">
+              <h1 id="window终端优化"><a href="#window终端优化" class="headerlink" title="window终端优化"></a>window终端优化</h1><blockquote>
+<p>电脑升级w11后，wsl彻底用不了了，因为有热更新的bug，导致我一个前端压根无法使用wsl，只好寻求其他的终端解决方案，在找资料的过程中才发现，原来powershell 的功能以及生态已经做的很好了，后面w11试了一下觉得可以，我的台式机w10也优化了，亲测有效！以下为我优化的步骤</p>
+</blockquote>
+<h2 id="前置工作"><a href="#前置工作" class="headerlink" title="前置工作"></a>前置工作</h2><ul>
+<li><p>通过<code>Micorsoft Store</code>下载 <code>window Terminal</code></p>
+</li>
+<li><p>通过<code>Micorsoft Store</code>下载<code>oh my posh</code></p>
+</li>
+<li><p>下载<code>oh my posh</code>推荐字体 <a href="https://link.zhihu.com/?target=https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Meslo.zip">下载包地址</a></p>
+</li>
+<li><p>安装刚才的 下载字体到windows fonts里</p>
+<h2 id="设置终端为oh-my-posh-主题"><a href="#设置终端为oh-my-posh-主题" class="headerlink" title="设置终端为oh my posh 主题"></a>设置终端为oh my posh 主题</h2></li>
+<li><p>在<code>window Terminal</code>设置字体</p>
+<ul>
+<li><p>打开  <code>window Terminal</code>，用快捷键 <code>ctrl + shift + ,(逗号)</code>来打开 setting.json配置文件W</p>
+</li>
+<li><p>修改 <code>default</code>选项如下：</p>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json">defaults: &#123;<br>	font: &#123;<br>		face: &quot;MesloLGM NF&quot;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><p>保存后 重新打开终端，输入<code>notepad $profile</code>并回车，询问你没有文件是否新建文件时点是即可</p>
+</li>
+<li><p>在文件中写入<code>oh-my-posh init pwsh | Invoke-Expression</code>，然后保存，重启终端，如下<br>  ![[Pasted image 20220816133554.png]]</p>
+</li>
+<li><p>如果想设置别的主题，先在终端查看有什么主题，输入命令并且回车 <code>Get-PoshThemes</code>，然后<code>oh my posh</code>会输出自己的主题，并且输出一个例子，你复制例子的命令修改里面的主题文件如下</p>
+  <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">oh</span><span class="hljs-literal">-my</span><span class="hljs-literal">-posh</span> init pwsh -<span class="hljs-literal">-config</span> C:\Users\你的路径\AppData\Local\Programs\oh<span class="hljs-literal">-my</span><span class="hljs-literal">-posh</span>\themes/主题名.omp.json | <span class="hljs-built_in">Invoke-Expression</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>终端输入<code>notepad $profile</code>写入刚才复制的命令 然后保存</p>
+</li>
+<li><p>这里我用的 <code>pure</code>主题，最终结果如下</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9873dfde206444caa18fc9d30ec20b90~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0.awebp" srcset="/sevenflow.blog/img/loading.gif" alt="image-20220816200428808"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="vscode-设置字体"><a href="#vscode-设置字体" class="headerlink" title="vscode 设置字体"></a>vscode 设置字体</h2><ul>
+<li>在vscode 中打开设置，在设置-&gt;功能-&gt;终端中修改 <code>Font Family</code>为 <code>MesloLGM NF</code></li>
+</ul>
+<h2 id="powershell-功能增强"><a href="#powershell-功能增强" class="headerlink" title="powershell 功能增强"></a>powershell 功能增强</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ul>
+<li><p>安装 PSReadline 包，该插件可以让命令行很好用，类似 zsh</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">Install-Module</span> <span class="hljs-literal">-Name</span> PSReadLine <span class="hljs-literal">-Scope</span> CurrentUser<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>安装 posh-git 包，让你的 git 更好用，以管理员运行 powershell 然后安装，安装不成功这个命令行加后缀 <code>-Force</code></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">Install-Module</span> posh<span class="hljs-literal">-git</span> <span class="hljs-literal">-Scope</span> CurrentUser<br></code></pre></td></tr></table></figure></li>
+<li><p>安装 DirColors 包，<code>ls</code>命令输出更为美观</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">Install-Module DirColors<br></code></pre></td></tr></table></figure>
+<h3 id="设置-profile"><a href="#设置-profile" class="headerlink" title="设置 $profile"></a>设置 <code>$profile</code></h3><p>因为刚才安装了module，所以相当于的也需要引入，和设置</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs text"># 引入 posh-git<br>Import-Module posh-git<br><br># 引入 ps-read-line<br>Import-Module PSReadLine<br><br># 引入<br>Import-Module DirColors<br><br># 设置 ps-read-line<br><br># 设置预测文本来源为历史记录<br>Set-PSReadLineOption -PredictionSource History<br><br># 每次回溯输入历史，光标定位于输入内容末尾<br>Set-PSReadLineOption -HistorySearchCursorMovesToEnd<br><br># 设置 Tab 为菜单补全和 Intellisense<br>Set-PSReadLineKeyHandler -Key &quot;Tab&quot; -Function MenuComplete<br><br># 设置 Ctrl+d 为退出 PowerShell<br>Set-PSReadlineKeyHandler -Key &quot;Ctrl+d&quot; -Function ViExit<br><br># 设置 Ctrl+z 为撤销<br>Set-PSReadLineKeyHandler -Key &quot;Ctrl+z&quot; -Function Undo<br><br># 设置向上键为后向搜索历史记录<br>Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward<br><br># 设置向下键为前向搜索历史纪录<br>Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward<br></code></pre></td></tr></table></figure></li>
+<li><p>写一个<code>open</code>快捷功能打开当前工作目录，编辑<code>$profile</code></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs text"># 1. 打开当前工作目录<br>function OpenCurrentFolder &#123;<br>	param<br>	(<br>		# 输入要打开的路径<br>		# 用法示例：open C:\<br>		# 默认路径：当前工作文件夹<br>		$Path = &#x27;.&#x27;<br>	)<br>	Invoke-Item $Path<br>&#125;<br>Set-Alias -Name open -Value OpenCurrentFolder<br></code></pre></td></tr></table></figure></li>
+<li><p>写一个<code>ls</code>与<code>ll</code>功能</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs text"># 2. 查看目录 ls &amp; ll<br>function ListDirectory &#123;<br>	(Get-ChildItem).Name<br>	Write-Host(&quot;&quot;)<br>&#125;<br>Remove-Item alias:\ls<br>Set-Alias -Name ls -Value ListDirectory<br>Set-Alias -Name ll -Value Get-ChildItem<br></code></pre></td></tr></table></figure>
+<p>保存文件，重启终端</p>
+</li>
+</ul>
+<h2 id="安装powershell-自己的包管理"><a href="#安装powershell-自己的包管理" class="headerlink" title="安装powershell 自己的包管理"></a>安装powershell 自己的包管理</h2><ul>
+<li><p>安装 <code>scoop</code></p>
+<p>网络报错可能就是需要梯子</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">Invoke-Expression</span> (<span class="hljs-built_in">New-Object</span> System.Net.WebClient).DownloadString(<span class="hljs-string">&#x27;https://get.scoop.sh&#x27;</span>)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>scoop</code></p>
+<ul>
+<li>比如下载 前端常用 <code>node</code>管理 <code>nvm</code><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">scoop search nvm<br></code></pre></td></tr></table></figure></li>
+<li>输出<br>  <img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/108bf586045d44bebc4516f66b7749d3~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0.awebp" srcset="/sevenflow.blog/img/loading.gif" alt="image-20220816200438984"></li>
+<li>安装<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">scoop install nvm<br></code></pre></td></tr></table></figure>
+比之前方便了很多<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>最终的<code>$profile</code>文件内容为<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs text"># 使用主题<br>oh-my-posh init pwsh | Invoke-Expression<br># 设置主题<br>oh-my-posh init pwsh --config C:\Users\wentao.yu\AppData\Local\Programs\oh-my-posh\themes/pure.omp.json | Invoke-Expression<br><br># 引入 posh-git<br>Import-Module posh-git<br><br># 引入 ps-read-line<br>Import-Module PSReadLine<br><br># 引入<br>Import-Module DirColors<br><br>#------------------------------- Import Modules END   -------------------------------<br><br>#-------------------------------  Set Hot-keys BEGIN  -------------------------------<br># 设置预测文本来源为历史记录<br>Set-PSReadLineOption -PredictionSource History<br><br># 每次回溯输入历史，光标定位于输入内容末尾<br>Set-PSReadLineOption -HistorySearchCursorMovesToEnd<br><br># 设置 Tab 为菜单补全和 Intellisense<br>Set-PSReadLineKeyHandler -Key &quot;Tab&quot; -Function MenuComplete<br><br># 设置 Ctrl+d 为退出 PowerShell<br>Set-PSReadlineKeyHandler -Key &quot;Ctrl+d&quot; -Function ViExit<br><br># 设置 Ctrl+z 为撤销<br>Set-PSReadLineKeyHandler -Key &quot;Ctrl+z&quot; -Function Undo<br><br># 设置向上键为后向搜索历史记录<br>Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward<br><br># 设置向下键为前向搜索历史纪录<br>Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward<br>#-------------------------------  Set Hot-keys END    -------------------------------<br>#-------------------------------   Set Alias BEGIN    -------------------------------<br><br># 1. 打开当前工作目录<br>function OpenCurrentFolder &#123;<br>	param<br>	(<br>		# 输入要打开的路径<br>		# 用法示例：open C:\<br>		# 默认路径：当前工作文件夹<br>		$Path = &#x27;.&#x27;<br>	)<br>	Invoke-Item $Path<br>&#125;<br>Set-Alias -Name open -Value OpenCurrentFolder<br><br># 2. 查看目录 ls &amp; ll<br>function ListDirectory &#123;<br>	(Get-ChildItem).Name<br>	Write-Host(&quot;&quot;)<br>&#125;<br>Remove-Item alias:\ls<br>Set-Alias -Name ls -Value ListDirectory<br>Set-Alias -Name ll -Value Get-ChildItem<br><br>#-------------------------------    Set Alias END     -------------------------------<br></code></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="最终终端效果为"><a href="#最终终端效果为" class="headerlink" title="最终终端效果为"></a>最终终端效果为</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0fca255a7a0548f082eb29acdf07c66f~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0.awebp" srcset="/sevenflow.blog/img/loading.gif" alt="image-20220816200451482"><br>带命令补全 以及 历史记录已经很方便了</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E7%B3%BB%E7%BB%9F/">系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/%E5%85%B6%E4%BB%96/">其他</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2023/03/25/react%20render%20%E4%BB%A5%E5%8F%8A%20update%20%E5%9C%A8fiber%E6%9E%B6%E6%9E%84%E5%89%8D%E5%90%8E%E7%9A%84%E5%B7%AE%E5%BC%82/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">react render 以及 update 在fiber架构前后的差异</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2022/04/19/%E6%B5%85%E8%B0%88%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/">
+                        <span class="hidden-mobile">浅谈富文本编辑器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>

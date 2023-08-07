@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>关于网页适配的总结 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="关于网页适配的总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-25 23:10" pubdate>
+        2020年11月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">关于网页适配的总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><p><a href="#intellectual">基础知识</a></p>
+</li>
+<li><p>   <a href="#pc">pc适配</a></p>
+</li>
+<li><p>   <a href="#bigScreen">大屏适配</a></p>
+</li>
+<li><p>   <a href="#modile">移动端适配</a></p>
+</li>
+<li><p>   <a href="#document">参考文档</a></p>
+</li>
+</ul>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a><span id='intellectual'>基础知识</span></h2><h4 id="像素"><a href="#像素" class="headerlink" title="像素"></a>像素</h4><p>像素是屏幕的最小单位，所以平常说的像素不是px，而是指设备屏幕的最小单位</p>
+<h4 id="设备像素"><a href="#设备像素" class="headerlink" title="设备像素"></a><strong>设备像素</strong></h4><p>设备像素又称物理像素（physical pixel），设备能控制显示的最小单位（每个单位下有三个子像素（红黄蓝）这就是rgb色域），我们可以把这些像素看作成显示器上一个个的点，一般指的是分辨率。</p>
+<blockquote>
+<p>​    之前没出现 Retina（视网膜） 技术之前（苹果公司提出），1px对应的就是一个物理像素，随之出现2倍屏，3倍屏指的是之前对应的1物理像素对应相应2倍甚至3倍，苹果公司已经解决了相应的1px渲染到 retina 设备的适配问题，开发人员需要解决的是图片适配的问题，200*200图片在正常屏幕下正常显示，但是在2倍或者3倍的屏幕下会被放大2，3倍，所以图片一般要做2到3倍的适配。</p>
+</blockquote>
+<h4 id="逻辑像素"><a href="#逻辑像素" class="headerlink" title="逻辑像素"></a>逻辑像素</h4><p>独立于设备的用于逻辑上衡量像素的单位。CSS 像素就是逻辑像素，CSS 像素是 Web 编程的概念。一般指px，<strong>它是图像显示的基本单元，既不是一个确定的物理量，也不是一个点或者小方块，而是一个抽象概念</strong>。所以在谈论像素时一定<strong>要清楚它的上下文</strong>！对于web的设备逻辑像素可用<code>screen.width</code>和<code>screen.height</code>去取。</p>
+<h4 id="设备像素比"><a href="#设备像素比" class="headerlink" title="设备像素比"></a>设备像素比</h4><p>设备分辨率 / 逻辑像素 = DPR（设备像素比）一般就是指的几倍屏，也可<code>window.devicePixelRatio</code>直接获取，是几倍屏就需要几倍的图片。</p>
+<h4 id="vw-vh（css3新增）-兼容性"><a href="#vw-vh（css3新增）-兼容性" class="headerlink" title="vw / vh（css3新增）(兼容性)"></a>vw / vh（css3新增）(兼容性)</h4><ul>
+<li>vw (设备的100%宽度)<ul>
+<li>1vw = 浏览器可视宽度 /100</li>
+</ul>
+</li>
+<li>vh(设备的100%高度)<ul>
+<li>1vh =浏览器可视高度 /100</li>
+</ul>
+</li>
+</ul>
+<h4 id="vmin-vmax（css3新增）-兼容性"><a href="#vmin-vmax（css3新增）-兼容性" class="headerlink" title="vmin/vmax（css3新增）(兼容性)"></a>vmin/vmax（css3新增）(兼容性)</h4><ul>
+<li>设备的高宽中哪一个小，哪个就是vmin，比如1920*1080，vmin代表的就是1080，所以1vmin就是 1080/100</li>
+<li>vmax与之相反</li>
+</ul>
+<h4 id="rem-em"><a href="#rem-em" class="headerlink" title="rem/em"></a>rem/em</h4><ul>
+<li>rem （css3新增）(兼容性)<ul>
+<li><strong>相对于HTML 根元素的 font-size的大小定义</strong></li>
+<li><strong>全局的rem大小是固定的</strong></li>
+<li>不设置的情况下 因为浏览器默认HTML的font-size是16px，所以1rem=16px</li>
+</ul>
+</li>
+<li>em<ul>
+<li> em的值并不是固定的</li>
+<li>em会继承父级元素的字体大小 </li>
+<li>如果父级元素未定义，那么1em=16px</li>
+</ul>
+</li>
+</ul>
+<h4 id="媒体查询（css3新增）-兼容性"><a href="#媒体查询（css3新增）-兼容性" class="headerlink" title="媒体查询（css3新增）(兼容性)"></a>媒体查询（css3新增）(兼容性)</h4><ul>
+<li>可以通过查询规则不同写入不同的css样式从而渲染</li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Media_queries">逻辑操作符</a></li>
+</ul>
+<h4 id="meta信息"><a href="#meta信息" class="headerlink" title="meta信息"></a>meta信息</h4><ul>
+<li><p>元信息 用来告知浏览器的网页设置</p>
+</li>
+<li><p>viewport 的 meta</p>
+<ul>
+<li>  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,minimum-scale=1, user-scalable=no">  
+</li>
+<li><pre><code class="tex">width：控制 viewport 的大小，可以指定的一个值，如 600，或者特殊的值，如 device-width 为设备的宽度（单位为缩放为 100% 时的 CSS 的像素）。
+height：和 width 相对应，指定高度。
+initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例。
+maximum-scale：允许用户缩放到的最大比例。
+minimum-scale：允许用户缩放到的最小比例。
+user-scalable：用户是否可以手动缩放
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs"><br>    <br><br>## &lt;span id=&quot;pc&quot; &gt; PC适配 &lt;/span&gt;<br><br>#### [主流适配]( https://www.1688.com/ )<br><br>* 1200px的主体宽度居中展示<br>* 两侧用百分比展示<br><br>#### [流式适配]( [https://xgfe.github.io/2018/01/26/zhoushiqi/Web%E7%AB%AF%E5%B1%8F%E5%B9%95%E9%80%82%E9%85%8D%E6%96%B9%E6%A1%88/](https://xgfe.github.io/2018/01/26/zhoushiqi/Web端屏幕适配方案/) )<br><br>&gt; 栅格栏布局<br><br>- 设计师需要做栅格栏设计，页面均等为12份，然后所有的布局按照栅格栏的对齐线进行对齐<br>- 当需要缩放时进行百分比缩放即可<br>- 适合大量留白的页面，布局样式单一的页面 <br><br>#### [响应式适配]( https://www.bootcss.com/ )<br><br>&gt; 媒体查询<br><br>- 示例 <br><br>  - ```html<br>    &lt;!-- link元素中的CSS媒体查询 --&gt;<br>    &lt;link rel=&quot;stylesheet&quot; media=&quot;(max-width: 800px)&quot; href=&quot;example.css&quot; /&gt;<br>    <br>    &lt;!-- 样式表中的CSS媒体查询 --&gt;<br>    &lt;style&gt;<br>    @media (max-width: 600px) &#123;<br>      .facet_sidebar &#123;<br>        display: none;<br>      &#125;<br>    &#125;<br>    &lt;/style&gt;<br></code></pre></td></tr></table></figure></code></pre>
+</li>
+</ul>
+</li>
+<li><p>提前写好相关的查询规则</p>
+<ul>
+<li>一般规则都是市面上的主流分辨率的宽度，</li>
+</ul>
+</li>
+</ul>
+<h2 id="大屏适配"><a href="#大屏适配" class="headerlink" title=" 大屏适配 "></a><span id="bigScreen" > 大屏适配 </span></h2><ul>
+<li>对接<ul>
+<li>大屏物理信息（大屏一般是led屏幕 ，有p系列的规则）<ul>
+<li>得知大屏的物理信息自己可计算出实际可达最高分辨率，比如 12m*4m 大小的p50 led屏 ，p50的是1平方米 400 * 400 个点，可算出实际分辨率为 12*400 / 4 *400 = 4800/1600</li>
+</ul>
+</li>
+<li><strong>大屏的分辨率（一定是甲方已知道的）</strong><ul>
+<li>需要告知设计，设计需要按照该分辨率作图</li>
+</ul>
+</li>
+<li>大屏的终端<ul>
+<li>只有终端支持最高的分辨率，大屏才可显示最高分辨率</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>选用方案<ul>
+<li>固定写法<ul>
+<li>直接把大小全部写死</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="移动端适配"><a href="#移动端适配" class="headerlink" title=" 移动端适配 "></a><span id="modile" > 移动端适配 </span></h2><h4 id="小程序"><a href="#小程序" class="headerlink" title="小程序"></a>小程序</h4><ul>
+<li>现在各大厂的小程序采用的都是 rpx代替px来进行布局，其实他就是rem ，所以咱们不需要操心适配的事情</li>
+</ul>
+<h4 id="H5移动端"><a href="#H5移动端" class="headerlink" title="H5移动端"></a>H5移动端</h4><ul>
+<li><p>流式布局</p>
+<ul>
+<li>简书，掘金（响应以及流式）</li>
+</ul>
+</li>
+<li><p><strong>rem 布局</strong></p>
+<ul>
+<li><p><a href="https://github.com/amfe/lib-flexible">淘宝的 flexible </a></p>
+<ul>
+<li>利用不同分辨率下的 HTML 的font-size来控制 rem的大小，将屏幕分为10等份</li>
+</ul>
+</li>
+<li><p>网上所流传的 rem 计算公式</p>
+<ul>
+<li><p>不同分辨率，不同比例</p>
+</li>
+<li><pre><code class="js">resize(originSize) &#123;
+      let widths = document.documentElement.clientWidth
+        var scale = (widths / originSize) * 200 //在X轴下求出比例并放大100倍。
+      document.getElementsByTagName(&#39;html&#39;)[0].style.fontSize = scale + &#39;px&#39;
+    &#125;</code></pre>
+</li>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title=" 参考文档 "></a><span id="document" > 参考文档 </span></h2><p><a href="%5Bhttps://xgfe.github.io/2018/01/26/zhoushiqi/Web%E7%AB%AF%E5%B1%8F%E5%B9%95%E9%80%82%E9%85%8D%E6%96%B9%E6%A1%88/%5D(https://xgfe.github.io/2018/01/26/zhoushiqi/Web%E7%AB%AF%E5%B1%8F%E5%B9%95%E9%80%82%E9%85%8D%E6%96%B9%E6%A1%88/)">Web 端屏幕适配方案</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/post/5cd0f87d6fb9a0325031c7ae#heading-3">掌握web开发基础系列–物理像素、逻辑像素、css像素</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/libin-1/p/7148377.html">什么是物理像素、虚拟像素、逻辑像素、设备像素，什么又是 PPI, DPI, DPR 和 DIP</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/post/5d21a9bd5188255360190e7e#heading-1">浅谈-web屏幕适配的解决方案</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E5%89%8D%E7%AB%AF/">前端</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/js/">js</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2020/11/25/react%E7%9A%84redux/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">react的状态管理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2020/11/25/wsl%E7%B3%BB%E7%BB%9F%E4%BF%AE%E6%94%B9bash%E6%98%BE%E7%A4%BAgit%E5%88%86%E6%94%AF%E5%90%8D%E7%A7%B0/">
+                        <span class="hidden-mobile">wsl 系统修改 bash 显示 git 分支名称</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>

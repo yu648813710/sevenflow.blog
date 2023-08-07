@@ -1,0 +1,609 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/sevenflow.blog/img/favicon.jpg">
+  <link rel="icon" href="/sevenflow.blog/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="76">
+  <meta name="keywords" content="">
+  
+  <title>浏览器中JS的执行机制 - 7流</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/sevenflow.blog/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/sevenflow.blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"github.com","root":"/sevenflow.blog/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/sevenflow.blog/js/utils.js" ></script>
+  <script  src="/sevenflow.blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/sevenflow.blog/">&nbsp;<strong>好似荒野</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/sevenflow.blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/sevenflow.blog/img/default.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="浏览器中JS的执行机制">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-25 23:10" pubdate>
+        2021年8月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      33
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">浏览器中JS的执行机制</h1>
+            
+            <div class="markdown-body">
+              <h1 id="浏览器中JS的执行机制"><a href="#浏览器中JS的执行机制" class="headerlink" title="浏览器中JS的执行机制"></a>浏览器中JS的执行机制</h1><h2 id="JS代码是按照顺序执行的吗？"><a href="#JS代码是按照顺序执行的吗？" class="headerlink" title="JS代码是按照顺序执行的吗？"></a>JS代码是按照顺序执行的吗？</h2><blockquote>
+<p>JS本身确实是按照顺序执行的，但是存在一些特殊场景比如变量提升和闭包</p>
+</blockquote>
+<h3 id="变量提升"><a href="#变量提升" class="headerlink" title="变量提升"></a>变量提升</h3><blockquote>
+<p>所谓的变量提升，是指在 JavaScript 代码执行过程中，JavaScript 引擎把变量的声明部分和函数的声明部分提升到代码开头的“行为”。变量被提升后，会给变量设置默认值，这个默认值就是我们熟悉的 undefined</p>
+</blockquote>
+<p>变量提升如下所示</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js">showName() <span class="hljs-comment">// 函数showName被执行</span><br><span class="hljs-built_in">console</span>.log(myname) <span class="hljs-comment">// undefined</span><br><span class="hljs-keyword">var</span> myname = <span class="hljs-string">&#x27;极客时间&#x27;</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showName</span>(<span class="hljs-params"></span>) </span>&#123; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;函数showName被执行&#x27;</span>);&#125;<br></code></pre></td></tr></table></figure>
+
+<p>产生变量提升的原因是</p>
+<ul>
+<li>js引擎把函数和变量在执行之前提升到了代码开头</li>
+</ul>
+<p>那这个是怎么处理的？看下面的执行流程</p>
+<h3 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h3><p>因为变量提升所以引出一个问题，JS在浏览器执行中做了一些事情，分为编译阶段和执行阶段</p>
+<h4 id="编译阶段"><a href="#编译阶段" class="headerlink" title="编译阶段"></a>编译阶段</h4><ul>
+<li>编译后生成两部分内容：<code>执行上下文</code> 和 <code>可执行代码</code><ul>
+<li><code>执行上下文</code>是js执行一段代码的云效环境</li>
+<li><code>执行上下文</code>存在一个变量环境的对象，该对象中保存了变量提升的内容</li>
+</ul>
+</li>
+<li>上个示例代码的分析<ul>
+<li>第 1 行和第 2 行，由于这两行代码不是声明操作，所以 JavaScript 引擎不会做任何处理；</li>
+<li>第 3 行，由于这行是经过 var 声明的，因此 JavaScript 引擎将在环境对象中创建一个名为 myname 的属性，并使用 undefined 对其初始化；</li>
+<li>第 4 行，JavaScript 引擎发现了一个通过 function 定义的函数，所以它将函数定义存储到堆 (HEAP）中，并在环境对象中创建一个 showName 的属性，然后将该属性值指向堆中函数的位置</li>
+</ul>
+</li>
+</ul>
+<p>编译后有了可执行的上下文环境以及执行代码进入执行阶段</p>
+<h4 id="执行阶段"><a href="#执行阶段" class="headerlink" title="执行阶段"></a>执行阶段</h4><ul>
+<li><p>上课示例代码的执行</p>
+<ul>
+<li><p>当执行到 showName 函数时，JavaScript 引擎便开始在变量环境对象中查找该函数，由于变量环境对象中存在该函数的引用，所以 JavaScript 引擎便开始执行该函数，并输出“函数 showName 被执行”结果。</p>
+</li>
+<li><p>接下来打印“myname”信息，JavaScript 引擎继续在变量环境对象中查找该对象，由于变量环境存在 myname 变量，并且其值为 undefined，所以这时候就输出 undefined。</p>
+</li>
+<li><p>接下来执行第 3 行，把“极客时间”赋给 myname 变量，赋值后变量环境中的 myname 属性值改变为“极客时间”，变量环境如下所示：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js">VariableEnvironment:<br>	myname -&gt; <span class="hljs-string">&quot;极客时间&quot;</span>,<br>        showName -&gt;<span class="hljs-function"><span class="hljs-keyword">function</span> : </span>&#123;<span class="hljs-built_in">console</span>.log(myname)<br></code></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>代码出现相同的变量以及函数怎么处理？</p>
+<ul>
+<li>会在编译阶段，最后拿到的变量或者函数为最终值</li>
+</ul>
+</li>
+</ul>
+<h2 id="调用栈：为什么JS会栈溢出"><a href="#调用栈：为什么JS会栈溢出" class="headerlink" title="调用栈：为什么JS会栈溢出"></a>调用栈：为什么JS会栈溢出</h2><h3 id="哪些代码为可以在编译的时候创建独立的上下文？"><a href="#哪些代码为可以在编译的时候创建独立的上下文？" class="headerlink" title="哪些代码为可以在编译的时候创建独立的上下文？"></a>哪些代码为可以在编译的时候创建独立的上下文？</h3><ul>
+<li>首先是全局上下文，JS执行全局代码的时候会创建全局上下文，并且整个页面生命周期内只有一份</li>
+<li>当调用一个函数会创建执行上下文，一般情况执行结束上下文也会被摧毁</li>
+<li>使用eval函数的时候（已经弃用）</li>
+</ul>
+<h3 id="函数调用和栈的关系"><a href="#函数调用和栈的关系" class="headerlink" title="函数调用和栈的关系"></a>函数调用和栈的关系</h3><blockquote>
+<p>JS函数调用会产生执行上下文，但是有时候可能一个函数里面还包有另外一个函数，所以执行上下文有可能是多个，而JS引擎就是用<code>栈</code>这种数据结构来管理<code>执行上下文的</code></p>
+</blockquote>
+<h4 id="什么是栈"><a href="#什么是栈" class="headerlink" title="什么是栈"></a>什么是栈</h4><ul>
+<li>一种数据结构容器</li>
+<li>特点就是<code>先进后出</code></li>
+</ul>
+<h3 id="什么是JS调用栈"><a href="#什么是JS调用栈" class="headerlink" title="什么是JS调用栈"></a>什么是JS调用栈</h3><ul>
+<li>JS引擎管理<code>执行上下文</code>的栈结构</li>
+<li>JS引擎会把<code>执行上下文</code>压入栈中，把这种管理叫做调用栈</li>
+</ul>
+<h3 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h3><ul>
+<li>JS引擎的调用栈是有大小的，超过一定的<code>执行上下文</code>就会报错</li>
+<li>递归最容易因为没有边界条件导致栈溢出，所以有时候处理问题需要用setTimeout来优化，为什么使用定时器可以解决栈移除问题？ function foo() { setTimeout(foo, 0) } foo() 像setTimeout 、setInterval Promise 这样的全局函数不是js 的一部分，而是webapi 部分。 当遇到webApi 时，会将其回调函数(foo)交给web apis 处理，此时 调用栈 中foo 函数执行完毕，出栈，栈为空； 回调函数会被发送到任务队列中，等待event loop 事件循环将其捞出 重新放入到堆栈中 …. 参考：<a target="_blank" rel="noopener" href="https://juejin.im/post/5d2d146bf265da1b9163c5c9#heading-15">https://juejin.im/post/5d2d146bf265da1b9163c5c9#heading-15</a></li>
+</ul>
+<h2 id="块级作用域以及var缺陷以及const-let出现"><a href="#块级作用域以及var缺陷以及const-let出现" class="headerlink" title="块级作用域以及var缺陷以及const let出现"></a>块级作用域以及var缺陷以及const let出现</h2><p>会出现变量提升得原因就是因为之前ES规范不支持块级作用域，因为当初设计这门语言的时候，并没有想到 JavaScript 会火起来，所以只是按照最简单的方式来设计。没有了块级作用域，再把作用域内部的变量统一提升无疑是最快速、最简单的设计，不过这也直接导致了函数中的变量无论是在哪里声明的，在编译阶段都会被提取到执行上下文的变量环境中，所以这些变量在整个函数体内部的任何地方都是能被访问的，这也就是 JavaScript 中的变量提升。</p>
+<p>块级作用域是为了解决变量提升带来得缺陷</p>
+<h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><blockquote>
+<p>作用域是指在程序中定义变量的区域，该位置决定了变量的生命周期。通俗地理解，作用域就是变量与函数的可访问范围，即作用域控制着变量和函数的可见性和生命周期</p>
+</blockquote>
+<ul>
+<li>全局作用域<ul>
+<li>在代码中得任何地方都可访问，其生命周期伴随着页面的生命周期</li>
+</ul>
+</li>
+<li>函数作用域<ul>
+<li>函数内部得函数或者变量只能在函数内部访问，函数执行完后 内部得变量也会被销毁</li>
+</ul>
+</li>
+</ul>
+<h3 id="变量提升缺陷"><a href="#变量提升缺陷" class="headerlink" title="变量提升缺陷"></a>变量提升缺陷</h3><ul>
+<li><p>变量易被覆盖</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs js"><br><br><span class="hljs-comment">/***********************没有块级作用域覆盖***************************/</span><br><br><span class="hljs-keyword">var</span> myname = <span class="hljs-string">&quot;极客时间&quot;</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showName</span>(<span class="hljs-params"></span>)</span>&#123;<br>  <span class="hljs-built_in">console</span>.log(myname); <span class="hljs-comment">// undefined</span><br>  <span class="hljs-keyword">if</span>(<span class="hljs-number">0</span>)&#123;<br>   <span class="hljs-keyword">var</span> myname = <span class="hljs-string">&quot;极客邦&quot;</span><br>  &#125;<br>  <span class="hljs-built_in">console</span>.log(myname); <span class="hljs-comment">// undefined</span><br>&#125;<br>showName()<br><span class="hljs-comment">// 原因就是因为执行showName 得时候 if语句内得 myname被读取 导致出现变量提升覆盖了全局得 myname</span><br><span class="hljs-comment">/**********************块级作用域未被覆盖****************************/</span><br><br><span class="hljs-keyword">let</span> myname1 = <span class="hljs-string">&quot;极客时间&quot;</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showName1</span>(<span class="hljs-params"></span>)</span>&#123;<br>  <span class="hljs-built_in">console</span>.log(myname1); <span class="hljs-comment">// 极客时间</span><br>  <span class="hljs-keyword">if</span>(<span class="hljs-number">0</span>)&#123;<br>   <span class="hljs-keyword">let</span> myname1 = <span class="hljs-string">&quot;极客邦&quot;</span><br>  &#125;<br>  <span class="hljs-built_in">console</span>.log(myname1); <span class="hljs-comment">// 极客时间</span><br>&#125;<br>showName1()<br><br><span class="hljs-comment">/**************************************************/</span><br></code></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>变量在应该销毁得情况下未被销毁</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/***********没有块级作用域得*************/</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>)</span>&#123;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">7</span>; i++) &#123;<br>  &#125;<br>  <span class="hljs-built_in">console</span>.log(i); <span class="hljs-comment">// 7未被销毁 因为 i 在foo函数作用域里存在</span><br>&#125;<br>foo()<br><br></code></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="如何支持块级作用域"><a href="#如何支持块级作用域" class="headerlink" title="如何支持块级作用域"></a>如何支持块级作用域</h3><ul>
+<li><p>引入const与let</p>
+<p>为了解决块级作用域问题</p>
+</li>
+<li><p>如何支持块级作用域</p>
+<p>需要站在<code>执行上下文得角度</code>来看，代码如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs js"><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>)</span>&#123;<br>    <span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span><br>    <span class="hljs-keyword">let</span> b = <span class="hljs-number">2</span><br>    &#123;<br>      <span class="hljs-keyword">let</span> b = <span class="hljs-number">3</span><br>      <span class="hljs-keyword">var</span> c = <span class="hljs-number">4</span><br>      <span class="hljs-keyword">let</span> d = <span class="hljs-number">5</span><br>      <span class="hljs-built_in">console</span>.log(a)<br>      <span class="hljs-built_in">console</span>.log(b)<br>    &#125;<br>    <span class="hljs-built_in">console</span>.log(b) <br>    <span class="hljs-built_in">console</span>.log(c)<br>    <span class="hljs-built_in">console</span>.log(d)<br>&#125;   <br>foo()<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第一步编译并创建执行上下文<ul>
+<li>函数内部var的变量，编译阶段全存放到<code>变量环境</code>中</li>
+<li>通过let的声明的变量，在编译阶段会被存放到<code>词法环境</code></li>
+<li>函数的作用域块内部，通过let声明的变量并没有被存放在词法环境中</li>
+</ul>
+</li>
+<li>第二部执行<ul>
+<li>执行函数在找寻变量时 是按照 先 <code>词法环境</code>再<code>变量环境</code>，<code>词法环境</code>也是自上而下查找</li>
+<li><code>词法环境</code>内部维护了小型栈结构，栈底是函数最外层的变量，进入一个作用域块后，会把内部的变量全部压入栈中，执行完作用域后然后从栈顶释放</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="暂时性死区"><a href="#暂时性死区" class="headerlink" title="暂时性死区"></a>暂时性死区</h3><p>在执行块级作用域时，如果变量未被赋值直接访问，会报错 Cannot access ‘****’ before initialization</p>
+<ul>
+<li>原因<ul>
+<li>在块作用域内，let声明的变量被提升，但变量只是创建被提升，初始化并没有被提升，在初始化之前使用变量，就会形成一个暂时性死区。</li>
+</ul>
+</li>
+</ul>
+<p>如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js">&#123;<br>  <span class="hljs-built_in">console</span>.log(myname25) <br>  <span class="hljs-keyword">let</span> myname25= <span class="hljs-string">&#x27;极客邦&#x27;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="作用域链和闭包-：代码中出现相同的变量，JavaScript引擎是如何选择的"><a href="#作用域链和闭包-：代码中出现相同的变量，JavaScript引擎是如何选择的" class="headerlink" title="作用域链和闭包 ：代码中出现相同的变量，JavaScript引擎是如何选择的"></a>作用域链和闭包 ：代码中出现相同的变量，JavaScript引擎是如何选择的</h2><h3 id="作用域链"><a href="#作用域链" class="headerlink" title="作用域链"></a>作用域链</h3><blockquote>
+<p>其实在每个执行上下文的变量环境中，都包含了一个外部引用，用来指向外部的执行上下文，我们把这个外部引用称为 outer</p>
+</blockquote>
+<ul>
+<li>寻找变量时JS引擎首先会在<code>当前的执行上下文</code>中查找变量，先找<code>词法环境</code>再<code>变量环境</code></li>
+<li>还没找到时就会找<code>outer</code>的外部引用变量环境，没找到继续找outer的outer一直找到全局的 <code>outer</code>，而全局的<code>outer</code>是指向<code>null</code>的，这个就是作用域链</li>
+</ul>
+<h3 id="词法作用域"><a href="#词法作用域" class="headerlink" title="词法作用域"></a>词法作用域</h3><blockquote>
+<p>词法作用域就是指作用域是由代码中函数<strong>声明的位置来决定的</strong>，所以词法作用域是静态的作用域，通过它就能够预测代码在执行过程中如何查找标识符，在编译的时候已经确定词法作用域了，和函数怎么调用没关系，词法作用域规定了 <code>outer</code>指向那里</p>
+</blockquote>
+<p>如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bar</span> (<span class="hljs-params"></span>) </span>&#123;<br>	<span class="hljs-built_in">console</span>.log(text)<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">show</span> (<span class="hljs-params"></span>) </span>&#123;<br>	&#123;<br>		<span class="hljs-keyword">let</span> text = <span class="hljs-number">1</span><br>         bar()<br>	&#125;<br>&#125;<br><br><span class="hljs-keyword">let</span> text = <span class="hljs-number">2</span><br>show() <span class="hljs-comment">//  打印出来是2，原因就是 bar 定义在全局 所以它的词法作用域就在全局 ，编译的时候 outer自然指向全局，而全局下的 text是2 </span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>之前的概念，闭包就是返回一个对象访问 函数内部的变量 。</p>
+<p>接下来看demo</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> myName = <span class="hljs-string">&quot;极客时间&quot;</span><br>    <span class="hljs-keyword">let</span> test1 = <span class="hljs-number">1</span><br>    <span class="hljs-keyword">const</span> test2 = <span class="hljs-number">2</span><br>    <span class="hljs-keyword">var</span> innerBar = &#123;<br>        getName:<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;<br>            <span class="hljs-built_in">console</span>.log(test1)<br>            <span class="hljs-keyword">return</span> myName<br>        &#125;,<br>        setName:<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newName</span>)</span>&#123;<br>            myName = newName<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> innerBar<br>&#125;<br><span class="hljs-keyword">var</span> bar = foo()<br>bar.setName(<span class="hljs-string">&quot;极客邦&quot;</span>)<br>bar.getName()<br><span class="hljs-built_in">console</span>.log(bar.getName())<br></code></pre></td></tr></table></figure>
+
+<p>这个当然产生了闭包，而用刚才的知识就是 foo 函数虽然被 调用完成了，但是 bar 变量引用了 返回的 innerBar 导致 ，而innerBar的 outer 是 foo 函数的 环境上下文，所以 foo函数的 test1 以及 myName 变量就无法被销毁，所以只要调用 innerBar的 方法 就会访问这个未被销毁的 环境上下文，这个无法销毁的环境上下文 就是 foo 函数产生的闭包 </p>
+<ul>
+<li>定义 <ul>
+<li>在 JavaScript 中，根据词法作用域的规则，内部函数总是可以访问其外部函数中声明的变量，当通过调用一个外部函数返回一个内部函数后，即使该外部函数已经执行结束了，但是内部函数引用外部函数的变量依然保存在内存中，我们就把这些变量的集合称为闭包。比如外部函数是 foo，那么这些变量的集合就称为 foo 函数的闭包。</li>
+<li>调用 顺序是 调用闭包 ，然后闭包里的 outer</li>
+</ul>
+</li>
+</ul>
+<h3 id="闭包回收"><a href="#闭包回收" class="headerlink" title="闭包回收"></a>闭包回收</h3><p>闭包容易造成内存泄漏，因为无法被回收，通常，如果引用闭包的函数是一个全局变量，那么闭包会一直存在直到页面关闭；但如果这个闭包以后不再使用的话，就会造成内存泄漏。避免这种现象的出现就是 把闭包 要被赋值的变量 定义为局部的 而不是全局，局部变量的函数调用完后 会直接 销毁函数，所以内部的 局部变量也会被销毁</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/categories/%E8%AF%BB%E4%B9%A6/">读书</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/sevenflow.blog/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E8%B7%B5/">浏览器工作原理与实践</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/09/15/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">浏览器中的页面</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/sevenflow.blog/2021/08/25/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C/">
+                        <span class="hidden-mobile">浏览器中的网络</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/yu648813710" target="_blank" rel="nofollow noopener"><span>SevenFLow</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/sevenflow.blog/js/debouncer.js" ></script>
+<script  src="/sevenflow.blog/js/events.js" ></script>
+<script  src="/sevenflow.blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/sevenflow.blog/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/sevenflow.blog/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/sevenflow.blog/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/sevenflow.blog/js/boot.js" ></script>
+
+
+
+</body>
+</html>
