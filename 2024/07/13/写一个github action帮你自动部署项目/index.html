@@ -16,12 +16,12 @@
   <meta name="author" content="76">
   <meta name="keywords" content="">
   
-    <meta name="description" content="现有项目的部署是手动部署的，主要是 上服务器 docker 打包 然后把docker 镜像推到目标服务器 然后 执行，现在boss让我用 git action设置一下自动部署 ，说干就干，我这里使用的是 自由服务器托管，所以需要在自己的服务器添加runner 服务器添加runneraction 本质是在你服务器自动运行脚本，所以需要一个运行时来进行运行 先需要在github 的 setting里面">
+    <meta name="description" content="现有项目的部署是手动部署的，主要是 上服务器 docker 打包 然后把docker 镜像推到目标服务器 然后 执行，现在boss让我用 git action设置一下自动部署 ，说干就干，我这里使用的是 自由服务器托管，所以需要在自己的服务器添加runner. 服务器添加runneraction 本质是在你服务器自动运行脚本，所以需要一个运行时来进行运行 先需要在github 的 setting里">
 <meta property="og:type" content="article">
 <meta property="og:title" content="写一个github action帮你自动部署项目">
 <meta property="og:url" content="https://github.com/yu648813710/2024/07/13/%E5%86%99%E4%B8%80%E4%B8%AAgithub%20action%E5%B8%AE%E4%BD%A0%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%E9%A1%B9%E7%9B%AE/index.html">
 <meta property="og:site_name" content="7流">
-<meta property="og:description" content="现有项目的部署是手动部署的，主要是 上服务器 docker 打包 然后把docker 镜像推到目标服务器 然后 执行，现在boss让我用 git action设置一下自动部署 ，说干就干，我这里使用的是 自由服务器托管，所以需要在自己的服务器添加runner 服务器添加runneraction 本质是在你服务器自动运行脚本，所以需要一个运行时来进行运行 先需要在github 的 setting里面">
+<meta property="og:description" content="现有项目的部署是手动部署的，主要是 上服务器 docker 打包 然后把docker 镜像推到目标服务器 然后 执行，现在boss让我用 git action设置一下自动部署 ，说干就干，我这里使用的是 自由服务器托管，所以需要在自己的服务器添加runner. 服务器添加runneraction 本质是在你服务器自动运行脚本，所以需要一个运行时来进行运行 先需要在github 的 setting里">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2024/07/13/DM3fbzYR6NIXd7U.png">
 <meta property="og:image" content="https://s2.loli.net/2024/07/13/IVduEkX1DHLPnTh.png">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://s2.loli.net/2024/07/13/NFRrjqS7XvOZKLD.png">
 <meta property="og:image" content="https://s2.loli.net/2024/07/13/6NyPIB2fnMCvjTK.png">
 <meta property="article:published_time" content="2024-07-13T13:43:00.000Z">
-<meta property="article:modified_time" content="2024-07-13T14:02:57.238Z">
+<meta property="article:modified_time" content="2024-07-26T15:32:51.319Z">
 <meta property="article:author" content="76">
 <meta property="article:tag" content="github action">
 <meta name="twitter:card" content="summary_large_image">
@@ -285,7 +285,7 @@
             
               <div class="markdown-body">
                 
-                <p>现有项目的部署是手动部署的，主要是 上服务器 docker 打包 然后把docker 镜像推到目标服务器 然后 执行，现在boss让我用 git action设置一下自动部署 ，说干就干，我这里使用的是 自由服务器托管，所以需要在自己的服务器添加runner</p>
+                <p>现有项目的部署是手动部署的，主要是 上服务器 docker 打包 然后把docker 镜像推到目标服务器 然后 执行，现在boss让我用 git action设置一下自动部署 ，说干就干，我这里使用的是 自由服务器托管，所以需要在自己的服务器添加runner.</p>
 <h2 id="服务器添加runner"><a href="#服务器添加runner" class="headerlink" title="服务器添加runner"></a>服务器添加runner</h2><p>action 本质是在你服务器自动运行脚本，所以需要一个运行时来进行运行</p>
 <p>先需要在github 的 setting里面知道 action这个选项，里面有一个runners，你可以在里面选择你服务器的型号 会根据你所选的 给你不同的 运行脚本 来安装runner</p>
 <p><img src="https://s2.loli.net/2024/07/13/DM3fbzYR6NIXd7U.png" srcset="/sevenflow.blog/img/loading.gif" lazyload alt="Untitled.png"></p>
